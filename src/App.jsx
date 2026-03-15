@@ -1,629 +1,851 @@
-import React from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Linkedin,
-  Download,
-  BarChart3,
-  Database,
-  Cloud,
-  LineChart,
-  Briefcase,
-  GraduationCap,
-  Award,
-  ChevronRight,
-  Sparkles,
-  TrendingUp,
-  ShieldCheck,
-  Brain,
-  ExternalLink,
-} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
-const skills = {
-  "Programming & Analytics": [
-    "SQL",
-    "Python",
-    "R",
-    "MySQL",
-    "SQL Server",
-    "Oracle",
-    "Pandas",
-    "NumPy",
-  ],
-  "Visualization & Reporting": [
-    "Power BI",
-    "Tableau",
-    "Excel",
-    "DAX",
-    "Matplotlib",
-    "Seaborn",
-    "Executive Reporting",
-  ],
-  "Cloud & Data Engineering": [
-    "AWS EC2",
-    "AWS S3",
-    "AWS Lambda",
-    "Azure",
-    "ETL Pipelines",
-    "Data Governance",
-    "CI/CD Workflows",
-  ],
-  "Business & Data Expertise": [
-    "KPI Development",
-    "Forecasting",
-    "Data Modeling",
-    "Statistical Analysis",
-    "Data Quality",
-    "Stakeholder Communication",
-  ],
-};
-
-const metrics = [
-  { value: "28%", label: "Reporting reliability improvement" },
-  { value: "25%", label: "Reduction in manual reporting effort" },
-  { value: "6000+", label: "Records analyzed in automotive platform" },
-  { value: "3.96/4.0", label: "Master's GPA in Data Science & Analytics" },
-];
-
-const highlights = [
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const PROJECTS = [
   {
-    icon: TrendingUp,
-    title: "Business Impact",
-    description: "I turn raw and disconnected data into KPI-driven decisions for business teams.",
-  },
-  {
-    icon: Brain,
-    title: "Analytical Thinking",
-    description: "I combine SQL, Python, statistical analysis, and dashboarding to explain the why behind trends.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Data Trust",
-    description: "I care deeply about validation, consistency, documentation, and stakeholder confidence in reporting.",
-  },
-];
-
-const projects = [
-  {
-    title: "Superstore Sales Performance & Customer Analytics",
-    category: "Dashboard Engineering",
-    tools: ["SQL", "Power BI", "Statistical Analysis"],
-    problem:
-      "Built a business analytics solution to improve visibility into revenue performance, customer segmentation, and KPI trends.",
+    id: 1, num: "01",
+    title: "Superstore Sales & Customer Analytics",
+    tag: "Python · EDA", year: "2024",
+    accent: "#C8FF00",
+    desc: "Full EDA on 51,290 global orders (2011–2014). Monthly sales trends, top-10 products by revenue, customer segmentation (Low/Medium/High), regional distribution across 13 markets, and category-level profit analysis using Python, Pandas, Matplotlib & Seaborn.",
+    tech: ["Python", "Pandas", "Matplotlib", "Seaborn", "NumPy"],
     highlights: [
-      "Designed relational data models and reporting pipelines for accurate downstream analytics",
-      "Developed dashboards for revenue segmentation, customer clustering, and KPI tracking",
-      "Performed trend, variance, and contribution analysis to uncover pricing and inventory insights",
+      { label: "Dataset",     value: "51K rows"   },
+      { label: "Period",      value: "2011–2014"  },
+      { label: "Top Product", value: "Apple Phone" },
+      { label: "Best Profit", value: "Technology" },
     ],
-    impact: "Enabled clearer pricing and inventory decisions through business-friendly analytics storytelling.",
-    github: "#",
-    demo: "#",
+    modal: {
+      overview: "End-to-end exploratory data analysis on the global SuperStore Orders dataset — 51,290 rows × 21 columns spanning 2011–2014 across multiple markets, regions, and product categories. The project covered data cleaning, date parsing, feature engineering (profit margin, year/month extraction), customer segmentation, and multi-dimensional visualisation using Python.",
+      dashboards: [
+        {
+          name: "Monthly Sales Trend",
+          desc: "Time-series line chart showing monthly sales per year (2011–2014). January 2011 opened at $98,902 with peak months consistently in Q4. Year-over-year growth tracked across all markets using Seaborn lineplot with hue by year.",
+        },
+        {
+          name: "Top 10 Products by Revenue",
+          desc: "Bar chart ranking products by total sales. Apple Smart Phone Full Size led at $86,936, followed by Cisco Smart Phone ($76,441), Motorola ($73,159), Nokia ($71,904), and Canon imageCLASS 2200 Copier ($61,600).",
+        },
+        {
+          name: "Customer Segmentation",
+          desc: "Quantile-based (qcut) segmentation split 793 customers into Low, Medium, and High value tiers by total sales. High-value customers identified for targeted retention strategies.",
+        },
+        {
+          name: "Regional Sales Distribution",
+          desc: "Pie chart across 13 global regions. Central region led at $2.82M, followed by South ($1.60M), North ($1.25M), and Oceania ($1.10M). Africa, EMEA, and Southeast Asia showed strong secondary performance.",
+        },
+        {
+          name: "Category Profit Analysis",
+          desc: "Technology dominated profit at $663,779, followed by Office Supplies ($518,474). Furniture lagged at $286,782 — surfacing a clear margin optimisation opportunity for stakeholders.",
+        },
+      ],
+      stats: [
+        { label: "Rows",        value: "51,290"          },
+        { label: "Years",       value: "2011–2014"        },
+        { label: "Top Product", value: "Apple Smart Phone" },
+        { label: "Top Region",  value: "Central $2.82M"   },
+        { label: "Best Profit", value: "Technology"        },
+        { label: "Avg Profit",  value: "$28.64 / order"   },
+      ],
+    },
   },
   {
+    id: 2, num: "02",
     title: "Automotive Market Analytics Platform",
-    category: "Forecasting Analytics",
-    tools: ["SQL", "Power BI", "Time Series Analysis"],
-    problem:
-      "Created an analytics platform using 6,000+ automotive sales records to identify demand forecasting trends and support planning decisions.",
+    tag: "BI & Forecasting", year: "2024",
+    accent: "#FF6B35",
+    desc: "\"Insightful Drive: Unveiling Trends in the Car Sales Market\" — 3 Power BI dashboards analysing ~6,000 rows × 30 columns. BMW led revenue, peak year 2019, top consumer rating 4.80, Texas #1 by reviews.",
+    tech: ["Power BI", "DAX", "Data Cleaning", "KPI Dashboards", "Kaggle"],
     highlights: [
-      "Integrated SQL transformations with Power BI reporting",
-      "Presented sales and demand trends through stakeholder-friendly dashboards",
-      "Implemented data validation and reconciliation to improve reporting trustworthiness",
+      { label: "Top Brand",  value: "BMW"      },
+      { label: "Peak Year",  value: "2019"     },
+      { label: "Top Rating", value: "4.80"     },
+      { label: "Dataset",    value: "~6K rows" },
     ],
-    impact: "Improved demand visibility and reporting trustworthiness for strategic planning.",
-    github: "#",
-    demo: "#",
+    modal: {
+      overview: "\"Insightful Drive: Unveiling Trends in the Car Sales Market\" — a comprehensive Power BI analysis of the Kaggle Cars-for-sale dataset (~6,000 rows, 30 columns) delivering three production-ready dashboards covering revenue trends, customer satisfaction, and stock/deal analytics.",
+      dashboards: [
+        {
+          name: "Dashboard 1 — Revenue Analysis",
+          desc: "Total revenue by make (BMW #1), revenue trend over years (peak: 2019), price distribution histogram, and top-10 most expensive cars. Lamborghini Aventador LP700-4 topped the list at $549,999.",
+        },
+        {
+          name: "Dashboard 2 — Customer Service Analysis",
+          desc: "Consumer rating distribution (top rating 4.80, count 3,496), ratings vs mileage scatter, seller type breakdown (Dealer vs Private), and geographic review map — Texas leads with 1,225 reviews.",
+        },
+        {
+          name: "Dashboard 3 — Stock Market Analysis",
+          desc: "Deal type donut (Good / Great / Fair / NA), performance vs value-for-money scatter, drivetrain distribution (All-wheel Drive dominates), and fuel type treemap (Gasoline #1).",
+        },
+      ],
+      stats: [
+        { label: "Top Brand",    value: "BMW"      },
+        { label: "Peak Revenue", value: "2019"     },
+        { label: "Best Rating",  value: "4.80"     },
+        { label: "Top State",    value: "Texas"    },
+        { label: "Top Fuel",     value: "Gasoline" },
+        { label: "Top Drive",    value: "AWD"      },
+      ],
+    },
   },
   {
+    id: 3, num: "03",
     title: "House Price Prediction",
-    category: "Machine Learning",
-    tools: ["Python", "Machine Learning", "Power BI"],
-    problem:
-      "Developed a predictive analytics workflow for housing prices using feature engineering, cleaning, normalization, and visual storytelling.",
+    tag: "ML · Sklearn", year: "2023",
+    accent: "#A78BFA",
+    desc: "Kaggle competition — predicted sale prices for 1,459 homes (81 features). Built automated ML pipelines with Scikit-learn for imputation, encoding, and scaling. Random Forest (R² 0.8936) outperformed Linear Regression (R² 0.8867). Submitted 1,459 predictions.",
+    tech: ["Python", "Scikit-learn", "Random Forest", "Pandas", "Joblib"],
     highlights: [
-      "Prepared structured datasets with feature engineering and preprocessing",
-      "Visualized pricing trends, residual variance, and geographic comparisons",
-      "Documented KPI contribution and driver analysis for clear business interpretation",
+      { label: "Dataset",   value: "1,460 rows" },
+      { label: "Features",  value: "81 cols"    },
+      { label: "R² Score",  value: "0.8936"     },
+      { label: "MAE",       value: "$17,468"    },
     ],
-    impact: "Made predictive results easier to trust and interpret for non-technical stakeholders.",
-    github: "#",
-    demo: "#",
+    modal: {
+      overview: "Kaggle House Prices — Advanced Regression Techniques. Built a complete supervised ML pipeline to predict residential sale prices on a dataset of 1,460 training rows and 81 features. The pipeline automated preprocessing for both numeric and categorical columns, trained two models, compared performance, and generated a final 1,459-row submission file.",
+      dashboards: [
+        {
+          name: "Data Preprocessing Pipeline",
+          desc: "ColumnTransformer pipeline with separate numeric (median imputation + StandardScaler) and categorical (most-frequent imputation + OneHotEncoder) branches. Handled all missing values automatically across 81 features.",
+        },
+        {
+          name: "Linear Regression Baseline",
+          desc: "Trained on 1,168 samples (80/20 split). Results: MAE $18,285 · RMSE $29,476 · R² 0.8867. Served as the performance baseline for comparison.",
+        },
+        {
+          name: "Random Forest Model (Best)",
+          desc: "RandomForestRegressor with 300 estimators. Results: MAE $17,468 · RMSE $28,573 · R² 0.8936 — outperformed Linear Regression on all three metrics. Model saved as house_price_model.pkl using Joblib.",
+        },
+        {
+          name: "Actual vs Predicted Plot",
+          desc: "Scatter plot comparing y_test vs best model predictions. Sample prediction: $140,646 vs actual $154,500 — within 9% error on an unseen test row.",
+        },
+        {
+          name: "Kaggle Submission",
+          desc: "Generated submission.csv with 1,459 predictions for the test set. Top predicted prices ranged from ~$121K to ~$204K, with the model producing smooth, realistic price distributions.",
+        },
+      ],
+      stats: [
+        { label: "Train Rows",  value: "1,168"    },
+        { label: "Features",    value: "81 cols"  },
+        { label: "Best Model",  value: "Random Forest" },
+        { label: "R² Score",    value: "0.8936"   },
+        { label: "MAE",         value: "$17,468"  },
+        { label: "RMSE",        value: "$28,573"  },
+      ],
+    },
   },
   {
-    title: "Encrypted Data Storage with Attribute-Based Access Control",
-    category: "Data Governance",
-    tools: ["Cloud Architecture", "Data Governance", "Security"],
-    problem:
-      "Designed a secure data storage architecture aligned with enterprise governance and controlled access principles.",
-    highlights: [
-      "Integrated attribute-based encryption concepts for secure storage",
-      "Established versioning and audit traceability practices",
-      "Improved data integrity across cloud-based pipeline workflows",
-    ],
-    impact: "Strengthened data governance, integrity, and traceability across cloud workflows.",
-    github: "#",
-    demo: "#",
+    id: 4, num: "04",
+    title: "Encrypted Data Storage (ABE)",
+    tag: "Data Security", year: "2023",
+    accent: "#38BDF8",
+    desc: "Secure cloud storage architecture with Attribute-Based Encryption aligned to enterprise governance. Dataset versioning, audit traceability, and lifecycle management across AWS & Azure.",
+    tech: ["AWS", "Azure", "ABE", "Data Governance"],
+    modal: {
+      overview: "Designed a secure cloud data storage architecture integrating Attribute-Based Encryption (ABE) with enterprise-grade data governance standards, lifecycle management, and full audit traceability.",
+      dashboards: [
+        { name: "ABE Architecture",    desc: "Attribute-Based Encryption schema with role-based access control policies aligned to enterprise governance standards." },
+        { name: "Lifecycle Management", desc: "Dataset versioning system ensuring data integrity and full auditability across cloud pipelines (AWS + Azure)." },
+        { name: "Audit Traceability",  desc: "Access logs and audit trails providing complete visibility into data access patterns and security events." },
+      ],
+      stats: [
+        { label: "Cloud",      value: "AWS + Azure"    },
+        { label: "Encryption", value: "ABE"            },
+        { label: "Focus",      value: "Security"       },
+        { label: "Outcome",    value: "Enterprise governance" },
+      ],
+    },
   },
 ];
 
-const experience = [
+const EXPERIENCE = [
   {
-    role: "Data Analyst",
-    company: "Eco Servants, USA",
-    period: "Oct 2025 – Present",
-    points: [
-      "Designed and maintained data models that improved reporting reliability and downstream analytics accessibility",
-      "Built user-friendly reporting pipelines with validation checks for non-technical stakeholders",
-      "Developed interactive Power BI and Tableau dashboards for executive and business audiences",
-      "Optimized SQL queries across large structured and semi-structured datasets",
-      "Automated refresh and validation workflows in AWS and Azure environments",
+    role: "Data Analyst", company: "Eco Servants", location: "USA", period: "Oct 2025 – Present",
+    bullets: [
+      "Designed data models improving reporting reliability by 28%",
+      "Built Power BI & Tableau dashboards for executive & non-technical audiences",
+      "Optimised SQL query efficiency across large-scale structured datasets",
+      "Developed automated data refresh workflows in AWS & Azure",
     ],
   },
   {
-    role: "Data Analyst Intern",
-    company: "Kominfo Solutions, India",
-    period: "Mar 2022 – Feb 2023",
-    points: [
-      "Built relational data transformation workflows supporting enterprise analytics",
-      "Developed SQL pipelines to standardize datasets for reporting teams",
-      "Designed KPI dashboards with forecasting and operational tracking insights",
-      "Automated refresh and transformation workflows to reduce manual reporting effort",
-      "Translated complex datasets into executive reports and business summaries",
+    role: "Data Analyst Intern", company: "Kominfo Solutions", location: "India", period: "Mar 2022 – Feb 2023",
+    bullets: [
+      "Built relational data transformation workflows, improving reporting efficiency by 18%",
+      "Automated data refresh workflows, reducing manual reporting effort by 25%",
+      "Designed KPI dashboards with forecasting insights for non-technical stakeholders",
+      "Generated executive reports translating complex datasets into clear business narratives",
     ],
   },
 ];
 
-const education = [
-  {
-    degree: "Master of Science in Data Science and Analytics",
-    school: "Florida Atlantic University",
-    period: "Dec 2023 – Dec 2025",
-    extra: "GPA: 3.96/4.0",
-  },
-  {
-    degree: "Bachelor of Technology in Computer Science and Engineering",
-    school: "Panimalar Institute of Technology",
-    period: "Apr 2019 – Apr 2023",
-    extra: "GPA: 8.5/10",
-  },
+const SKILLS = [
+  { category: "Analytics & BI",  items: ["Power BI (DAX)", "Tableau", "Excel (Advanced)", "Matplotlib", "Seaborn"] },
+  { category: "Programming",     items: ["SQL (MySQL · SQL Server · Oracle)", "Python (Pandas · NumPy)", "R", "KQL"] },
+  { category: "Cloud & Data",    items: ["AWS (EC2 · S3 · Lambda)", "Microsoft Azure", "ETL Pipelines", "Data Governance"] },
 ];
 
-function SectionTitle({ eyebrow, title, subtitle }) {
+// ── HOOKS ─────────────────────────────────────────────────────────────────────
+function useInView(threshold = 0.12) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setInView(true); },
+      { threshold }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, inView];
+}
+
+// ── CURSOR ────────────────────────────────────────────────────────────────────
+function Cursor() {
+  const dotRef  = useRef(null);
+  const ringRef = useRef(null);
+  const pos     = useRef({ x: -200, y: -200 });
+  const ring    = useRef({ x: -200, y: -200 });
+  useEffect(() => {
+    const onMove = (e) => { pos.current = { x: e.clientX, y: e.clientY }; };
+    window.addEventListener("mousemove", onMove);
+    let raf;
+    const tick = () => {
+      ring.current.x += (pos.current.x - ring.current.x) * 0.13;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.13;
+      if (dotRef.current)  dotRef.current.style.transform  = `translate(${pos.current.x - 4}px,${pos.current.y - 4}px)`;
+      if (ringRef.current) ringRef.current.style.transform = `translate(${ring.current.x - 22}px,${ring.current.y - 22}px)`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const grow   = (e) => { if (e.target.closest("a,button,[data-hover]") && ringRef.current) ringRef.current.classList.add("cur-ring--big"); };
+    const shrink = (e) => { if (e.target.closest("a,button,[data-hover]") && ringRef.current) ringRef.current.classList.remove("cur-ring--big"); };
+    document.addEventListener("mouseover", grow);
+    document.addEventListener("mouseout",  shrink);
+    return () => { window.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); document.removeEventListener("mouseover", grow); document.removeEventListener("mouseout", shrink); };
+  }, []);
+  return (<><div ref={dotRef} className="cur-dot" /><div ref={ringRef} className="cur-ring" /></>);
+}
+
+// ── PROJECT MODAL ─────────────────────────────────────────────────────────────
+function ProjectModal({ project, onClose }) {
+  const overlayRef = useRef(null);
+
+  // close on Escape
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  // close on backdrop click
+  const handleOverlayClick = (e) => { if (e.target === overlayRef.current) onClose(); };
+
+  const { modal, title, tag, year, tech, accent } = project;
+
   return (
-    <div className="mb-10">
-      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-3 max-w-2xl text-slate-600">{subtitle}</p> : null}
+    <div className="modal-overlay" ref={overlayRef} onClick={handleOverlayClick}>
+      <div className="modal" style={{ "--m-accent": accent }}>
+        {/* Header */}
+        <div className="modal__header">
+          <div className="modal__meta">
+            <span className="modal__tag">{tag}</span>
+            <span className="modal__year">{year}</span>
+          </div>
+          <button className="modal__close" onClick={onClose} aria-label="Close modal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div className="modal__body">
+          <h2 className="modal__title">{title}</h2>
+          <p className="modal__overview">{modal.overview}</p>
+
+          {/* Stats grid */}
+          <div className="modal__stats">
+            {modal.stats.map(s => (
+              <div key={s.label} className="modal__stat">
+                <span className="modal__stat-val">{s.value}</span>
+                <span className="modal__stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Dashboards */}
+          <h3 className="modal__section-title">Dashboards / Components</h3>
+          <div className="modal__dashboards">
+            {modal.dashboards.map((d, i) => (
+              <div key={i} className="modal__dash">
+                <div className="modal__dash-num">0{i + 1}</div>
+                <div>
+                  <p className="modal__dash-name">{d.name}</p>
+                  <p className="modal__dash-desc">{d.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tech pills */}
+          <h3 className="modal__section-title">Tech Stack</h3>
+          <ul className="modal__tech">
+            {tech.map(t => <li key={t}>{t}</li>)}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
 
-function GlassCard({ children, className = "" }) {
+// ── NAVBAR ────────────────────────────────────────────────────────────────────
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const s = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", s);
+    return () => window.removeEventListener("scroll", s);
+  }, []);
   return (
-    <div className={`rounded-[28px] border border-white/60 bg-white/80 backdrop-blur-xl shadow-[0_20px_60px_rgba(15,23,42,0.08)] ${className}`}>
-      {children}
-    </div>
+    <nav className={`nav${scrolled ? " nav--scrolled" : ""}`}>
+      <a href="#hero" className="nav__logo">NR<span className="accent">.</span></a>
+      <ul className="nav__links">
+        {["About","Experience","Projects","Skills","Contact"].map(l => (
+          <li key={l}><a href={`#${l.toLowerCase()}`} className="nav__link">{l}</a></li>
+        ))}
+      </ul>
+      <a href="#contact" className="btn btn--sm">Hire Me</a>
+    </nav>
   );
 }
 
+// ── HERO ──────────────────────────────────────────────────────────────────────
+function Hero() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setTimeout(() => setReady(true), 80); }, []);
+  return (
+    <section id="hero" className={`hero${ready ? " hero--in" : ""}`}>
+      <span className="hero__bg" aria-hidden="true">DA</span>
+      <div className="grain" aria-hidden="true" />
+      <div className="hero__inner">
+        <p className="hero__tag"><span className="dot" /> Open to new opportunities</p>
+        <h1 className="hero__title">
+          <span>Nagarajulu</span>
+          <span className="hero__title--outline">Reddy Nalla</span>
+          <span className="hero__title--small">Data Analyst · BI · People Analytics</span>
+        </h1>
+        <p className="hero__sub">
+          I turn complex, unrelated data points into clear, trustworthy reporting solutions —
+          empowering non-technical stakeholders to make smarter, faster decisions.
+        </p>
+        <div className="hero__cta">
+          <a href="#projects" className="btn btn--primary">View Projects</a>
+          <a href="#contact"  className="btn btn--outline">Let's Talk →</a>
+        </div>
+        <div className="hero__badges">
+          <span className="badge">M.S. Data Science &amp; Analytics — FAU</span>
+          <span className="badge">GPA 3.96 / 4.0</span>
+          <span className="badge">AWS Certified</span>
+        </div>
+      </div>
+      <div className="hero__scroll"><span>Scroll</span><div className="hero__scroll-line" /></div>
+      <div className="hero__circle hero__circle--1" />
+      <div className="hero__circle hero__circle--2" />
+    </section>
+  );
+}
+
+// ── ABOUT ─────────────────────────────────────────────────────────────────────
+function About() {
+  const [ref, inView] = useInView();
+  return (
+    <section id="about" ref={ref} className={`section about${inView ? " section--in" : ""}`}>
+      <div className="container about__grid">
+        <div className="about__left">
+          <p className="section__eyebrow">/ About Me</p>
+          <h2 className="section__title">Data that<br /><em>drives decisions.</em></h2>
+        </div>
+        <div className="about__right">
+          <p className="about__body">
+            I'm <strong>Nagarajulu Reddy Nalla</strong>, a Data Analyst with a Master's in
+            Data Science &amp; Analytics from Florida Atlantic University (GPA 3.96/4.0)
+            and hands-on experience designing data models, building reporting pipelines, and
+            delivering people-centered insights that drive strategic decisions.
+          </p>
+          <p className="about__body">
+            I specialise in SQL, Power BI, Tableau, and Python-based analytics workflows,
+            with a strong product-centric mindset toward data discoverability and quality.
+            I bridge the gap between raw data and real business value.
+          </p>
+          <div className="about__stats">
+            {[["3.96","GPA / 4.0"],["28%","Reporting improvement"],["25%","Manual effort saved"]].map(([n,l]) => (
+              <div key={l} className="about__stat">
+                <span className="about__stat-num">{n}</span>
+                <span className="about__stat-label">{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── EXPERIENCE ────────────────────────────────────────────────────────────────
+function Experience() {
+  const [ref, inView] = useInView();
+  return (
+    <section id="experience" ref={ref} className={`section experience${inView ? " section--in" : ""}`}>
+      <div className="container">
+        <p className="section__eyebrow">/ Experience</p>
+        <h2 className="section__title">Where I've worked.</h2>
+        <div className="exp__list">
+          {EXPERIENCE.map((e, i) => (
+            <div key={i} className="exp__item" style={{ "--di": i }}>
+              <div className="exp__meta">
+                <span className="exp__period">{e.period}</span>
+                <span className="exp__location">{e.location}</span>
+              </div>
+              <div className="exp__body">
+                <div className="exp__header">
+                  <h3 className="exp__role">{e.role}</h3>
+                  <span className="exp__company">{e.company}</span>
+                </div>
+                <ul className="exp__bullets">
+                  {e.bullets.map((b, bi) => <li key={bi}>{b}</li>)}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
+function ProjectCard({ p, i, onOpen }) {
+  const [ref, inView] = useInView(0.1);
+  return (
+    <article
+      ref={ref}
+      className={`project${inView ? " project--in" : ""}`}
+      style={{ "--delay": `${i * 0.12}s`, "--accent": p.accent }}
+      onClick={() => onOpen(p)}
+      data-hover
+    >
+      <div className="project__num">{p.num}</div>
+      <div className="project__body">
+        <div className="project__top">
+          <span className="project__tag">{p.tag}</span>
+          <span className="project__year">{p.year}</span>
+        </div>
+        <h3 className="project__title">{p.title}</h3>
+        <p className="project__desc">{p.desc}</p>
+        <ul className="project__tech">{p.tech.map(t => <li key={t}>{t}</li>)}</ul>
+        {p.highlights && (
+          <div className="project__highlights">
+            {p.highlights.map(h => (
+              <div key={h.label} className="project__hl">
+                <span className="project__hl-val">{h.value}</span>
+                <span className="project__hl-label">{h.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Click-to-open indicator */}
+      <div className="project__open">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </div>
+      <div className="project__glow" />
+    </article>
+  );
+}
+
+function Projects() {
+  const [ref, inView] = useInView();
+  const [activeProject, setActiveProject] = useState(null);
+
+  return (
+    <section id="projects" ref={ref} className={`section work${inView ? " section--in" : ""}`}>
+      <div className="container">
+        <p className="section__eyebrow">/ Technical Projects</p>
+        <h2 className="section__title">Projects I've built.</h2>
+        <p className="projects__hint">Click any project to see full details →</p>
+        <div className="work__grid">
+          {PROJECTS.map((p, i) => (
+            <ProjectCard key={p.id} p={p} i={i} onOpen={setActiveProject} />
+          ))}
+        </div>
+      </div>
+      {activeProject && (
+        <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
+      )}
+    </section>
+  );
+}
+
+// ── SKILLS ────────────────────────────────────────────────────────────────────
+function Skills() {
+  const [ref, inView] = useInView();
+  return (
+    <section id="skills" ref={ref} className={`section skills${inView ? " section--in" : ""}`}>
+      <div className="container">
+        <p className="section__eyebrow">/ Tech Stack</p>
+        <h2 className="section__title">What I work with.</h2>
+        <div className="skills__grid">
+          {SKILLS.map(({ category, items }, ci) => (
+            <div key={category} className="skill-group" style={{ "--di": ci }}>
+              <h3 className="skill-group__cat">{category}</h3>
+              <ul className="skill-group__list">
+                {items.map((item, ii) => (
+                  item === "AWS (EC2 · S3 · Lambda)" ? (
+                    <li key={item} className="skill-pill skill-pill--link" style={{ "--ii": ii }}>
+                      <a
+                        href="https://www.credly.com/badges/5b1d150a-c714-4ebe-aae2-7c8121ede1c7/public_url"
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Validation: 917c75f41e904f45814edf3007d8c87d"
+                      >
+                        {item} <span className="skill-pill__cert">✓ Certified</span>
+                      </a>
+                    </li>
+                  ) : (
+                    <li key={item} className="skill-pill" style={{ "--ii": ii }}>{item}</li>
+                  )
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="edu__strip">
+          <div className="edu__card">
+            <span className="edu__label">M.S. Data Science &amp; Analytics</span>
+            <span className="edu__school">Florida Atlantic University, FL, USA</span>
+            <span className="edu__detail">GPA 3.96 / 4.0 · Dec 2023 – Dec 2025</span>
+          </div>
+          <div className="edu__card">
+            <span className="edu__label">B.Tech Computer Science &amp; Engineering</span>
+            <span className="edu__school">Panimalar Institute of Technology, India</span>
+            <span className="edu__detail">GPA 8.5 / 10 · Apr 2019 – Apr 2023</span>
+          </div>
+          <a
+            className="edu__card edu__card--cert"
+            href="https://www.credly.com/badges/5b1d150a-c714-4ebe-aae2-7c8121ede1c7/public_url"
+            target="_blank"
+            rel="noreferrer"
+            title="Validation: 917c75f41e904f45814edf3007d8c87d"
+          >
+            <span className="edu__cert-badge">AWS</span>
+            <span className="edu__label">AWS Certified Cloud Practitioner</span>
+            <span className="edu__school">Amazon Web Services</span>
+            <span className="edu__detail">Issued Feb 13, 2026 · Expires Feb 13, 2029</span>
+            <span className="edu__verify">View Certificate →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CONTACT ───────────────────────────────────────────────────────────────────
+// 🔑 Replace the URL below with your Formspree endpoint after signing up at formspree.io
+const FORMSPREE_URL = "https://formspree.io/f/meerzlrd";
+
+function Contact() {
+  const [ref, inView] = useInView();
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSent(true);
+      } else {
+        setError("Something went wrong. Please try emailing me directly.");
+      }
+    } catch {
+      setError("Network error. Please try emailing me directly.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <section id="contact" ref={ref} className={`section contact${inView ? " section--in" : ""}`}>
+      <div className="container contact__grid">
+        <div className="contact__left">
+          <p className="section__eyebrow">/ Contact</p>
+          <h2 className="section__title">Let's build<br /><em>something great.</em></h2>
+          <p className="contact__sub">
+            Open to full-time Data Analyst roles, freelance analytics projects, and interesting collaborations.
+          </p>
+          <div className="contact__links">
+            <a href="mailto:nallanagarajulu@gmail.com" className="contact__link">nallanagarajulu@gmail.com</a>
+            <a href="tel:+15618161640"                 className="contact__link">+1 (561) 816-1640</a>
+            <a href="https://www.linkedin.com/in/nalla-nagarajulu-reddy-a43840251" target="_blank" rel="noreferrer" className="contact__link">LinkedIn →</a>
+            <a href="https://github.com/Nag4535/portfolio" target="_blank" rel="noreferrer" className="contact__link">GitHub →</a>
+          </div>
+        </div>
+        <div className="contact__right">
+          {sent ? (
+            <div className="contact__thanks">
+              <span className="contact__thanks-icon">✓</span>
+              <p>Message sent! I'll get back to you soon.</p>
+            </div>
+          ) : (
+            <form className="contact__form" onSubmit={handleSubmit}>
+              <div className="field">
+                <label htmlFor="name">Name</label>
+                <input id="name" name="name" type="text" placeholder="Your name" required value={form.name} onChange={handleChange} />
+              </div>
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="your@email.com" required value={form.email} onChange={handleChange} />
+              </div>
+              <div className="field">
+                <label htmlFor="message">Message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Tell me about the role or project…" required value={form.message} onChange={handleChange} />
+              </div>
+              {error && <p className="contact__error">{error}</p>}
+              <button type="submit" className="btn btn--primary btn--full" disabled={loading}>
+                {loading ? "Sending…" : "Send Message"}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── FOOTER ────────────────────────────────────────────────────────────────────
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="container footer__inner">
+        <span className="nav__logo">NR<span className="accent">.</span></span>
+        <p className="footer__copy">© {new Date().getFullYear()} Nagarajulu Reddy Nalla — Data Analyst</p>
+        <a href="#hero" className="footer__top">↑ Top</a>
+      </div>
+    </footer>
+  );
+}
+
+
+// ── CHATBOT ───────────────────────────────────────────────────────────────────
+const SYSTEM_PROMPT = `You are Naga, a friendly personal AI assistant on Nagarajulu Reddy Nalla's portfolio website. Answer questions about Nagarajulu concisely and professionally. Always refer to him as "Nagarajulu" or "he/him". If asked something unrelated to Nagarajulu, politely redirect.
+
+ABOUT NAGARAJULU:
+- Full name: Nagarajulu Reddy Nalla
+- Email: nallanagarajulu@gmail.com | Phone: +1 (561) 816-1640
+- Based in Florida, USA
+- Open to: Full-time Data Analyst, Business Analyst, People Analytics roles
+
+EDUCATION:
+- M.S. Data Science & Analytics — Florida Atlantic University, FL (GPA 3.96/4.0, Dec 2023 – Dec 2025)
+- B.Tech Computer Science & Engineering — Panimalar Institute of Technology, India (GPA 8.5/10, Apr 2019 – Apr 2023)
+- AWS Certified Cloud Practitioner (Issued Feb 13, 2026 · Expires Feb 13, 2029)
+
+EXPERIENCE:
+1. Data Analyst @ Eco Servants, USA (Oct 2025 – Present)
+   - Designed data models improving reporting reliability by 28%
+   - Built Power BI & Tableau dashboards for executive audiences
+   - Optimised SQL queries across large-scale datasets
+   - Automated data refresh workflows in AWS & Azure
+
+2. Data Analyst Intern @ Kominfo Solutions, India (Mar 2022 – Feb 2023)
+   - Improved reporting efficiency by 18%
+   - Reduced manual reporting effort by 25% via automation
+   - Designed KPI dashboards with forecasting insights
+
+PROJECTS:
+1. Superstore Sales & Customer Analytics (Python · EDA, 2024)
+   - 51,290 rows × 21 columns, 2011–2014 global orders
+   - Monthly sales trends, top-10 products, customer segmentation, regional distribution
+   - Top product: Apple Smart Phone ($86,936) | Top region: Central ($2.82M) | Best profit: Technology ($663,779)
+
+2. Automotive Market Analytics Platform (Power BI, 2024)
+   - ~6,000 rows × 30 columns Kaggle dataset
+   - 3 dashboards: Revenue Analysis, Customer Service, Stock Market Analysis
+   - BMW led revenue | Peak year: 2019 | Top rating: 4.80 | Texas #1 by reviews
+
+3. House Price Prediction (ML · Sklearn, 2023)
+   - Kaggle competition, 1,460 rows, 81 features
+   - Random Forest R² 0.8936, MAE $17,468, RMSE $28,573
+   - Generated 1,459 predictions submission file
+
+4. Encrypted Data Storage with ABE (Data Security, 2023)
+   - Attribute-Based Encryption, AWS + Azure
+   - Dataset versioning, audit traceability, enterprise data governance
+
+SKILLS:
+- Analytics & BI: Power BI (DAX), Tableau, Excel (Advanced), Matplotlib, Seaborn
+- Programming: SQL (MySQL, SQL Server, Oracle), Python (Pandas, NumPy), R, KQL
+- Cloud & Data: AWS (EC2, S3, Lambda), Microsoft Azure, ETL Pipelines, Data Governance
+
+Keep answers short (2-4 sentences max). Be warm and professional.`;
+
+function Chatbot() {
+  const [open, setOpen]       = useState(false);
+  const [messages, setMessages] = useState([
+    { role: "assistant", content: "Hi! I'm Naga 👋 Nagarajulu's AI assistant. Ask me anything about his experience, projects, or skills!" }
+  ]);
+  const [input, setInput]     = useState("");
+  const [loading, setLoading] = useState(false);
+  const bottomRef             = useRef(null);
+  const inputRef              = useRef(null);
+
+  useEffect(() => {
+    if (bottomRef.current) bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages, open]);
+
+  useEffect(() => {
+    if (open && inputRef.current) inputRef.current.focus();
+  }, [open]);
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
+    const userMsg = { role: "user", content: text };
+    setMessages(m => [...m, userMsg]);
+    setInput("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: SYSTEM_PROMPT,
+          messages: [...messages.filter(m => m.role !== "assistant" || messages.indexOf(m) > 0), userMsg],
+        }),
+      });
+      const data = await res.json();
+      const reply = data?.content?.[0]?.text || "Sorry, I couldn't get a response. Please try again.";
+      setMessages(m => [...m, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages(m => [...m, { role: "assistant", content: "Network error. Please try again!" }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKey = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } };
+
+  const SUGGESTIONS = ["What are his skills?", "Tell me about his projects", "Is he open to work?", "What's his experience?"];
+
+  return (
+    <>
+      {/* Floating bubble */}
+      <button
+        className={`chat-bubble${open ? " chat-bubble--open" : ""}`}
+        onClick={() => setOpen(o => !o)}
+        aria-label="Open chat"
+      >
+        {open ? (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.02 2 11c0 2.67 1.19 5.07 3.08 6.74L4 22l4.51-1.5C9.61 20.83 10.78 21 12 21c5.52 0 10-4.02 10-9S17.52 2 12 2zm1 13H7v-2h6v2zm4-4H7V9h10v2z"/></svg>
+        )}
+        {!open && <span className="chat-bubble__dot" />}
+      </button>
+
+      {/* Chat window */}
+      <div className={`chat-window${open ? " chat-window--open" : ""}`}>
+        {/* Header */}
+        <div className="chat-header">
+          <div className="chat-header__avatar">N</div>
+          <div>
+            <p className="chat-header__name">Naga AI</p>
+            <p className="chat-header__sub">Ask me about Nagarajulu</p>
+          </div>
+          <div className="chat-header__online" />
+        </div>
+
+        {/* Messages */}
+        <div className="chat-messages">
+          {messages.map((m, i) => (
+            <div key={i} className={`chat-msg chat-msg--${m.role}`}>
+              {m.role === "assistant" && <div className="chat-msg__avatar">N</div>}
+              <div className="chat-msg__bubble">{m.content}</div>
+            </div>
+          ))}
+          {loading && (
+            <div className="chat-msg chat-msg--assistant">
+              <div className="chat-msg__avatar">N</div>
+              <div className="chat-msg__bubble chat-msg__bubble--typing">
+                <span /><span /><span />
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Suggestions */}
+        {messages.length <= 1 && (
+          <div className="chat-suggestions">
+            {SUGGESTIONS.map(s => (
+              <button key={s} className="chat-suggestion" onClick={async () => { const text = s; const userMsg = { role: "user", content: text }; setMessages(m => [...m, userMsg]); setLoading(true); try { const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: SYSTEM_PROMPT, messages: [userMsg] }) }); const data = await res.json(); const reply = data?.content?.[0]?.text || "Sorry, try again."; setMessages(m => [...m, { role: "assistant", content: reply }]); } catch { setMessages(m => [...m, { role: "assistant", content: "Network error!" }]); } finally { setLoading(false); } }}>
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Input */}
+        <div className="chat-input-row">
+          <input
+            ref={inputRef}
+            className="chat-input"
+            placeholder="Ask about Nagarajulu…"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKey}
+            disabled={loading}
+          />
+          <button className="chat-send" onClick={send} disabled={loading || !input.trim()} aria-label="Send">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(59,130,246,0.12),_transparent_32%),linear-gradient(180deg,_#f8fbff_0%,_#eef4ff_45%,_#f8fafc_100%)] text-slate-900">
-      <header className="sticky top-0 z-50 border-b border-white/50 bg-white/60 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">Nagarajulu Reddy Nalla</h1>
-            <p className="text-sm text-slate-600">Data Analyst • Portfolio</p>
-          </div>
-          <nav className="hidden gap-6 text-sm text-slate-600 md:flex">
-            <a href="#about" className="transition hover:text-slate-950">About</a>
-            <a href="#skills" className="transition hover:text-slate-950">Skills</a>
-            <a href="#projects" className="transition hover:text-slate-950">Projects</a>
-            <a href="#experience" className="transition hover:text-slate-950">Experience</a>
-            <a href="#contact" className="transition hover:text-slate-950">Contact</a>
-          </nav>
-        </div>
-      </header>
-
+    <>
+      <Cursor />
+      <Navbar />
       <main>
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:38px_38px]" />
-          <div className="relative mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24">
-            <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-              <div>
-                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-white/80 px-4 py-2 text-sm font-medium text-cyan-900 shadow-sm backdrop-blur">
-                  <Sparkles className="h-4 w-4" />
-                  Open to Data Analyst Opportunities
-                </div>
-
-                <h2 className="max-w-4xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                  A portfolio built to look like the kind of analytics work companies want to hire.
-                </h2>
-
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                  I’m Nagarajulu Reddy Nalla, a Data Analyst specializing in SQL, Power BI, Python,
-                  and cloud analytics. I design reporting systems, business dashboards, and
-                  high-trust data workflows that make decision-making faster and clearer.
-                </p>
-
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <a
-                    href="#projects"
-                    className="inline-flex items-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
-                  >
-                    Explore Projects <ChevronRight className="ml-2 h-4 w-4" />
-                  </a>
-                  <a
-                    href="/resume.pdf"
-                    download
-                    className="inline-flex items-center rounded-2xl border border-slate-300 bg-white/80 px-6 py-3 text-sm font-medium text-slate-900 transition hover:-translate-y-0.5 hover:bg-white"
-                  >
-                    <Download className="mr-2 h-4 w-4" /> Download Resume
-                  </a>
-                </div>
-
-                <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-600">
-                  <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm">
-                    <Mail className="h-4 w-4" />
-                    <span>nallanagarajulu@gmail.com</span>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm">
-                    <Phone className="h-4 w-4" />
-                    <span>+1 (561) 816-1640</span>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm">
-                    <MapPin className="h-4 w-4" />
-                    <span>Arlington, USA</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-5">
-                <GlassCard className="p-6">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-500">Portfolio Snapshot</p>
-                      <h3 className="mt-1 text-2xl font-bold text-slate-950">Impact at a glance</h3>
-                    </div>
-                    <div className="rounded-2xl bg-cyan-100 p-3 text-cyan-900">
-                      <BarChart3 className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {metrics.map((metric) => (
-                      <div key={metric.label} className="rounded-2xl border border-slate-200 bg-white p-4">
-                        <div className="text-2xl font-black tracking-tight text-slate-950">{metric.value}</div>
-                        <div className="mt-1 text-sm text-slate-600">{metric.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </GlassCard>
-
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {highlights.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <GlassCard key={item.title} className="p-5">
-                        <div className="mb-4 inline-flex rounded-2xl bg-slate-100 p-3">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <h3 className="text-base font-semibold text-slate-950">{item.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                      </GlassCard>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="about" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-            <GlassCard className="p-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">About Me</p>
-              <h3 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">
-                I build analytics experiences, not just charts.
-              </h3>
-              <p className="mt-4 leading-7 text-slate-600">
-                My work is centered on reporting clarity, data trust, and business relevance. I enjoy
-                taking messy, fragmented, or complex datasets and transforming them into dashboards,
-                KPIs, and analysis that leaders can confidently use.
-              </p>
-            </GlassCard>
-
-            <GlassCard className="p-8">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-3xl bg-slate-950 p-6 text-white">
-                  <Database className="h-8 w-8" />
-                  <h4 className="mt-4 text-xl font-semibold">Data Foundation</h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    SQL, relational modeling, transformation pipelines, and validation workflows.
-                  </p>
-                </div>
-                <div className="rounded-3xl bg-cyan-50 p-6">
-                  <LineChart className="h-8 w-8 text-cyan-800" />
-                  <h4 className="mt-4 text-xl font-semibold text-slate-950">Decision Support</h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    KPI dashboards, trend analysis, forecasting, and stakeholder-ready storytelling.
-                  </p>
-                </div>
-                <div className="rounded-3xl bg-white p-6 ring-1 ring-slate-200">
-                  <Cloud className="h-8 w-8 text-slate-900" />
-                  <h4 className="mt-4 text-xl font-semibold text-slate-950">Cloud Workflow</h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    AWS and Azure support for refresh automation, scalable reporting, and governance.
-                  </p>
-                </div>
-                <div className="rounded-3xl bg-gradient-to-br from-slate-900 to-cyan-900 p-6 text-white">
-                  <Sparkles className="h-8 w-8" />
-                  <h4 className="mt-4 text-xl font-semibold">Recruiter Focused</h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Built to highlight business value, measurable outcomes, and presentation quality.
-                  </p>
-                </div>
-              </div>
-            </GlassCard>
-          </div>
-        </section>
-
-        <section id="skills" className="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
-          <SectionTitle
-            eyebrow="Skills"
-            title="Core tools and capabilities"
-            subtitle="Designed to present your profile like a polished analytics consultant rather than a simple student portfolio."
-          />
-          <div className="grid gap-6 md:grid-cols-2">
-            {Object.entries(skills).map(([category, items]) => (
-              <GlassCard key={category} className="p-6">
-                <div className="flex items-center justify-between gap-4">
-                  <h4 className="text-xl font-semibold text-slate-950">{category}</h4>
-                  <div className="h-2 w-24 rounded-full bg-slate-100">
-                    <div className="h-2 w-16 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600" />
-                  </div>
-                </div>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700 shadow-sm"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
-
-        <section id="projects" className="border-y border-white/50 bg-white/40 backdrop-blur-sm">
-          <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-            <SectionTitle
-              eyebrow="Projects"
-              title="Featured analytics work"
-              subtitle="Each project is presented with business framing, technical tools, and visible impact so your portfolio feels premium and hiring-ready."
-            />
-            <div className="grid gap-6 lg:grid-cols-2">
-              {projects.map((project) => (
-                <GlassCard key={project.title} className="group p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(15,23,42,0.12)]">
-                  <div className="mb-4 flex items-start justify-between gap-4">
-                    <div>
-                      <span className="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-800">
-                        {project.category}
-                      </span>
-                      <h4 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">{project.title}</h4>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{project.problem}</p>
-                    </div>
-                    <div className="rounded-2xl bg-slate-100 p-3 transition group-hover:bg-slate-950 group-hover:text-white">
-                      <LineChart className="h-5 w-5" />
-                    </div>
-                  </div>
-
-                  <div className="mb-5 flex flex-wrap gap-2">
-                    {project.tools.map((tool) => (
-                      <span
-                        key={tool}
-                        className="rounded-full bg-slate-950 px-3 py-1 text-xs font-medium text-white"
-                      >
-                        {tool}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="space-y-3 text-sm text-slate-600">
-                    {project.highlights.map((point) => (
-                      <div key={point} className="flex gap-3">
-                        <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
-                        <p>{point}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business Impact</p>
-                    <p className="mt-2 text-sm text-slate-700">{project.impact}</p>
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <a
-                      href={project.github}
-                      className="inline-flex items-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
-                    >
-                      GitHub <Github className="ml-2 h-4 w-4" />
-                    </a>
-                    <a
-                      href={project.demo}
-                      className="inline-flex items-center rounded-2xl bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-                    >
-                      Live Dashboard <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </div>
-                </GlassCard>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="experience" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-          <SectionTitle eyebrow="Experience" title="Professional journey" />
-          <div className="space-y-6">
-            {experience.map((job) => (
-              <GlassCard key={`${job.role}-${job.company}`} className="p-7">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-2xl bg-slate-950 p-3 text-white">
-                      <Briefcase className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-semibold text-slate-950">{job.role}</h4>
-                      <p className="text-slate-600">{job.company}</p>
-                    </div>
-                  </div>
-                  <span className="w-fit rounded-full border border-slate-300 bg-white px-3 py-1 text-sm text-slate-600">
-                    {job.period}
-                  </span>
-                </div>
-
-                <div className="mt-6 grid gap-3 text-sm text-slate-600 md:grid-cols-2">
-                  {job.points.map((point) => (
-                    <div key={point} className="flex gap-3 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-                      <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
-                      <p>{point}</p>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
-
-        <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 lg:grid-cols-[1fr_1fr] lg:px-8">
-          <GlassCard className="p-7">
-            <div className="mb-4 inline-flex rounded-2xl bg-slate-100 p-3">
-              <GraduationCap className="h-5 w-5" />
-            </div>
-            <h3 className="text-2xl font-semibold text-slate-950">Education</h3>
-            <div className="mt-6 space-y-4">
-              {education.map((item) => (
-                <div key={item.degree} className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-                  <h4 className="font-semibold text-slate-950">{item.degree}</h4>
-                  <p className="text-slate-600">{item.school}</p>
-                  <p className="text-sm text-slate-500">
-                    {item.period} • {item.extra}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </GlassCard>
-
-          <GlassCard className="p-7">
-            <div className="mb-4 inline-flex rounded-2xl bg-slate-100 p-3">
-              <Award className="h-5 w-5" />
-            </div>
-            <h3 className="text-2xl font-semibold text-slate-950">Certifications</h3>
-            <div className="mt-6 rounded-2xl bg-gradient-to-br from-slate-950 to-cyan-900 p-5 text-white">
-              <h4 className="font-semibold">AWS Certified Cloud Practitioner</h4>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Foundation-level cloud knowledge covering AWS services, architecture, security,
-                and pricing concepts.
-              </p>
-            </div>
-          </GlassCard>
-        </section>
-
-        <section id="contact" className="relative overflow-hidden bg-slate-950 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.2),transparent_22%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.18),transparent_28%)]" />
-          <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8">
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Contact</p>
-                <h3 className="mt-3 text-4xl font-bold tracking-tight">Let’s build something meaningful with data.</h3>
-                <p className="mt-4 max-w-2xl leading-7 text-slate-300">
-                  I’m actively looking for opportunities where I can contribute through analytics,
-                  data storytelling, dashboard development, and business-focused problem solving.
-                </p>
-              </div>
-
-              <div className="grid gap-4">
-                <a href="mailto:nallanagarajulu@gmail.com" className="rounded-[24px] border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:bg-white/10">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium">Email</p>
-                      <p className="text-sm text-slate-300">nallanagarajulu@gmail.com</p>
-                    </div>
-                  </div>
-                </a>
-
-                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" className="rounded-[24px] border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:bg-white/10">
-                  <div className="flex items-center gap-3">
-                    <Linkedin className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium">LinkedIn</p>
-                      <p className="text-sm text-slate-300">Replace with your LinkedIn profile URL</p>
-                    </div>
-                  </div>
-                </a>
-
-                <a href="https://github.com" target="_blank" rel="noreferrer" className="rounded-[24px] border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:bg-white/10">
-                  <div className="flex items-center gap-3">
-                    <Github className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium">GitHub</p>
-                      <p className="text-sm text-slate-300">Replace with your GitHub profile URL</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <Hero />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        <Contact />
       </main>
-    </div>
+      <Footer />
+      <Chatbot />
+    </>
   );
 }
-
-/*
-DEPLOY SETUP
-
-1) Create a Vite app
-   npm create vite@latest nagarajulu-portfolio -- --template react
-
-2) Install dependencies
-   npm install
-   npm install lucide-react
-
-3) Install Tailwind CSS
-   npm install -D tailwindcss @tailwindcss/vite
-
-4) Update vite.config.js
-   import { defineConfig } from 'vite'
-   import react from '@vitejs/plugin-react'
-   import tailwindcss from '@tailwindcss/vite'
-
-   export default defineConfig({
-     plugins: [react(), tailwindcss()],
-   })
-
-5) Replace src/App.jsx with this file
-
-6) In src/index.css add:
-   @import "tailwindcss";
-
-7) Put your resume file in public/resume.pdf
-
-8) Start locally
-   npm run dev
-
-9) Build for production
-   npm run build
-
-10) Deploy
-   - Vercel: import the GitHub repo and deploy
-   - Netlify: import the GitHub repo and deploy
-   Build command: npm run build
-   Publish directory: dist
-*/
