@@ -735,14 +735,15 @@ function Chatbot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system: SYSTEM_PROMPT,
-          messages: [...messages.filter(m => m.role !== "assistant" || messages.indexOf(m) > 0), userMsg],
+          messages: [...messages.filter((m, i) => i > 0), userMsg],
         }),
       });
       const data = await res.json();
-      const reply = data?.content?.[0]?.text || "Sorry, I couldn't get a response. Please try again.";
+      const reply = data?.content?.[0]?.text || data?.error || "Sorry, I couldn't get a response. Please try again.";
       setMessages(m => [...m, { role: "assistant", content: reply }]);
-    } catch {
-      setMessages(m => [...m, { role: "assistant", content: "Network error. Please try again!" }]);
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages(m => [...m, { role: "assistant", content: "Network error. Please check your connection and try again!" }]);
     } finally {
       setLoading(false);
     }
