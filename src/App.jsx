@@ -4,87 +4,92 @@ import { useState, useEffect, useRef } from "react";
 const PROJECTS = [
   {
     id: 1, num: "01",
-    title: "Superstore Sales & Customer Analytics",
-    tag: "Python · EDA", year: "2024",
+    title: "HR People Analytics Dashboard",
+    tag: "Power BI · ML", year: "2025",
     accent: "#C8FF00",
-    desc: "Full EDA on 51,290 global orders (2011–2014). Monthly sales trends, top-10 products by revenue, customer segmentation (Low/Medium/High), regional distribution across 13 markets, and category-level profit analysis using Python, Pandas, Matplotlib & Seaborn.",
-    tech: ["Python", "Pandas", "Matplotlib", "Seaborn", "NumPy"],
+    desc: "End-to-end HR analytics on IBM's 1,470 employee dataset. Built Gradient Boosting ML model (84% accuracy, ROC-AUC 0.80) to predict attrition. 3-page Power BI dashboard covering KPIs, attrition drivers, and employee insights.",
+    tech: ["Power BI", "Python", "Scikit-learn", "DAX", "Pandas"],
     highlights: [
-      { label: "Dataset",     value: "51K rows"   },
-      { label: "Period",      value: "2011–2014"  },
-      { label: "Top Product", value: "Apple Phone" },
-      { label: "Best Profit", value: "Technology" },
+      { label: "Employees",   value: "1,470"    },
+      { label: "Attrition",   value: "16.12%"   },
+      { label: "ML Accuracy", value: "84%"      },
+      { label: "Dashboards",  value: "3 Pages"  },
     ],
     modal: {
-      overview: "End-to-end exploratory data analysis on the global SuperStore Orders dataset — 51,290 rows × 21 columns spanning 2011–2014 across multiple markets, regions, and product categories. The project covered data cleaning, date parsing, feature engineering (profit margin, year/month extraction), customer segmentation, and multi-dimensional visualisation using Python.",
+      overview: "End-to-end HR People Analytics project on IBM's employee attrition dataset — 1,470 employees × 35 features. Built a complete Python EDA pipeline and Gradient Boosting ML model achieving 84% accuracy and ROC-AUC of 0.80 to predict which employees are likely to leave. Delivered a 3-page Power BI dashboard covering KPI overview, attrition analysis, and employee insights.",
       dashboards: [
         {
-          name: "Monthly Sales Trend",
-          desc: "Time-series line chart showing monthly sales per year (2011–2014). January 2011 opened at $98,902 with peak months consistently in Q4. Year-over-year growth tracked across all markets using Seaborn lineplot with hue by year.",
+          name: "Page 1 — HR Overview",
+          desc: "4 KPI cards showing Total Employees (1,470), Attrition Rate (16.12%), Avg Monthly Income ($6,503), and Avg Age (37). Bar charts showing attrition by Department and Job Role with interactive slicers.",
         },
         {
-          name: "Top 10 Products by Revenue",
-          desc: "Bar chart ranking products by total sales. Apple Smart Phone Full Size led at $86,936, followed by Cisco Smart Phone ($76,441), Motorola ($73,159), Nokia ($71,904), and Canon imageCLASS 2200 Copier ($61,600).",
+          name: "Page 2 — Attrition Analysis",
+          desc: "Deep-dive into attrition drivers — Salary Band (Low earners leave most), Tenure Group (0-2 yrs highest risk), Work-Life Balance impact, and Gender distribution. Department and Attrition slicers for filtering.",
         },
         {
-          name: "Customer Segmentation",
-          desc: "Quantile-based (qcut) segmentation split 793 customers into Low, Medium, and High value tiers by total sales. High-value customers identified for targeted retention strategies.",
+          name: "Page 3 — Employee Insights",
+          desc: "Monthly Income by Job Role, Employee Count by Department (donut chart), Job Satisfaction scores by role, and Avg Income comparison between employees who stayed vs left.",
         },
         {
-          name: "Regional Sales Distribution",
-          desc: "Pie chart across 13 global regions. Central region led at $2.82M, followed by South ($1.60M), North ($1.25M), and Oceania ($1.10M). Africa, EMEA, and Southeast Asia showed strong secondary performance.",
-        },
-        {
-          name: "Category Profit Analysis",
-          desc: "Technology dominated profit at $663,779, followed by Office Supplies ($518,474). Furniture lagged at $286,782 — surfacing a clear margin optimisation opportunity for stakeholders.",
+          name: "ML Model — Gradient Boosting",
+          desc: "Compared 6 ML models (Logistic Regression, Decision Tree, Random Forest, Gradient Boosting, KNN, SVM). Gradient Boosting won with 84% accuracy and ROC-AUC 0.80. Top attrition drivers: Monthly Income, Age, Total Working Years, Overtime, Job Role.",
         },
       ],
       stats: [
-        { label: "Rows",        value: "51,290"          },
-        { label: "Years",       value: "2011–2014"        },
-        { label: "Top Product", value: "Apple Smart Phone" },
-        { label: "Top Region",  value: "Central $2.82M"   },
-        { label: "Best Profit", value: "Technology"        },
-        { label: "Avg Profit",  value: "$28.64 / order"   },
+        { label: "Employees",    value: "1,470"     },
+        { label: "Attrition",    value: "16.12%"    },
+        { label: "Best Model",   value: "Gradient Boosting" },
+        { label: "ML Accuracy",  value: "84%"       },
+        { label: "ROC-AUC",      value: "0.80"      },
+        { label: "Dashboards",   value: "3 Pages"   },
       ],
     },
   },
   {
     id: 2, num: "02",
-    title: "Automotive Market Analytics Platform",
-    tag: "BI & Forecasting", year: "2024",
+    title: "Real-Time Sales Intelligence Platform",
+    tag: "Python · Streamlit", year: "2025",
     accent: "#FF6B35",
-    desc: "\"Insightful Drive: Unveiling Trends in the Car Sales Market\" — 3 Power BI dashboards analysing ~6,000 rows × 30 columns. BMW led revenue, peak year 2019, top consumer rating 4.80, Texas #1 by reviews.",
-    tech: ["Power BI", "DAX", "Data Cleaning", "KPI Dashboards", "Kaggle"],
+    desc: "End-to-end sales analytics platform built with Python, Prophet forecasting, and Streamlit. ETL pipeline processing 9,800 orders across 4 years. Live dashboard with 12-month sales forecast, regional analysis, and product intelligence.",
+    tech: ["Python", "Streamlit", "Prophet", "Plotly", "SQLite", "Pandas"],
     highlights: [
-      { label: "Top Brand",  value: "BMW"      },
-      { label: "Peak Year",  value: "2019"     },
-      { label: "Top Rating", value: "4.80"     },
-      { label: "Dataset",    value: "~6K rows" },
+      { label: "Orders",    value: "9,800"    },
+      { label: "Years",     value: "2015-2018" },
+      { label: "Forecast",  value: "12 Months" },
+      { label: "Live App",  value: "Deployed"  },
     ],
+    link: "https://sales-intelligence-platform-7gxjlq4qp9yhnsappmykkgv.streamlit.app/",
     modal: {
-      overview: "\"Insightful Drive: Unveiling Trends in the Car Sales Market\" — a comprehensive Power BI analysis of the Kaggle Cars-for-sale dataset (~6,000 rows, 30 columns) delivering three production-ready dashboards covering revenue trends, customer satisfaction, and stock/deal analytics.",
+      overview: "End-to-end Real-Time Sales Intelligence Platform built with Python, Prophet, Plotly and Streamlit. ETL pipeline extracts, transforms and loads 9,800 sales orders into SQLite database. Includes 12-month Prophet forecasting, interactive regional maps, product intelligence, and customer analysis — all deployed as a live web app on Streamlit Cloud.",
       dashboards: [
         {
-          name: "Dashboard 1 — Revenue Analysis",
-          desc: "Total revenue by make (BMW #1), revenue trend over years (peak: 2019), price distribution histogram, and top-10 most expensive cars. Lamborghini Aventador LP700-4 topped the list at $549,999.",
+          name: "ETL Pipeline",
+          desc: "Automated Python pipeline extracting 9,800 rows from CSV, transforming with feature engineering (Year, Month, Quarter, ShippingDays, SalesBand) and loading into SQLite database using SQLAlchemy.",
         },
         {
-          name: "Dashboard 2 — Customer Service Analysis",
-          desc: "Consumer rating distribution (top rating 4.80, count 3,496), ratings vs mileage scatter, seller type breakdown (Dealer vs Private), and geographic review map — Texas leads with 1,225 reviews.",
+          name: "Overview Dashboard",
+          desc: "4 KPI cards (Total Sales $2.3M, Total Orders 9,800, Avg Order Value $234, Total Customers 793). Sales by Category pie chart and Segment bar chart with interactive filters.",
         },
         {
-          name: "Dashboard 3 — Stock Market Analysis",
-          desc: "Deal type donut (Good / Great / Fair / NA), performance vs value-for-money scatter, drivetrain distribution (All-wheel Drive dominates), and fuel type treemap (Gasoline #1).",
+          name: "Trends & Forecasting",
+          desc: "Monthly sales trend from 2015-2018 with Prophet model forecasting next 12 months. Confidence intervals shown. Best months: November/December. Avg forecasted daily sales displayed.",
+        },
+        {
+          name: "Products & Customers",
+          desc: "Top 10 products (Canon imageCLASS Copier #1 at $61,599) and Top 10 customers (Sean Miller #1 at $25,043). Ship mode distribution pie chart.",
+        },
+        {
+          name: "Regional Analysis",
+          desc: "Sales by Region bar chart, interactive US choropleth map showing sales by state, and Top 10 States ranking. West region leads at $725,457.",
         },
       ],
       stats: [
-        { label: "Top Brand",    value: "BMW"      },
-        { label: "Peak Revenue", value: "2019"     },
-        { label: "Best Rating",  value: "4.80"     },
-        { label: "Top State",    value: "Texas"    },
-        { label: "Top Fuel",     value: "Gasoline" },
-        { label: "Top Drive",    value: "AWD"      },
+        { label: "Total Sales",   value: "$2.3M"     },
+        { label: "Orders",        value: "9,800"     },
+        { label: "Customers",     value: "793"       },
+        { label: "Forecast",      value: "12 Months" },
+        { label: "Top Product",   value: "Canon Copier" },
+        { label: "Top Region",    value: "West"      },
       ],
     },
   },
@@ -195,6 +200,49 @@ const PROJECTS = [
         { label: "Accuracy",   value: "84.01%"           },
         { label: "ROC-AUC",    value: "0.7984"           },
         { label: "Top Driver", value: "Monthly Income"   },
+      ],
+    },
+  },
+  {
+    id: 5, num: "05",
+    title: "HR People Analytics Dashboard",
+    tag: "Power BI · ML", year: "2025",
+    accent: "#2ed573",
+    desc: "End-to-end HR analytics solution on IBM's 1,470 employee dataset. Built a Gradient Boosting ML model (84% accuracy, ROC-AUC 0.7984) to predict attrition, and a 3-page Power BI dashboard covering HR Overview, Attrition Analysis, and Employee Insights.",
+    tech: ["Power BI", "Python", "Scikit-learn", "Pandas", "DAX"],
+    highlights: [
+      { label: "Employees",   value: "1,470"    },
+      { label: "Attrition",   value: "16.12%"   },
+      { label: "ML Accuracy", value: "84.01%"   },
+      { label: "ROC-AUC",     value: "0.7984"   },
+    ],
+    modal: {
+      overview: "End-to-end HR People Analytics project on IBM's employee dataset (1,470 rows × 35 features). Built a complete Python EDA pipeline and a Gradient Boosting ML model to predict employee attrition with 84% accuracy. Delivered a 3-page interactive Power BI dashboard covering HR Overview, Attrition Analysis, and Employee Insights with slicers for Department and Gender filtering.",
+      dashboards: [
+        {
+          name: "Page 1 — HR Overview",
+          desc: "4 KPI cards showing Total Employees (1,470), Attrition Rate (16.12%), Avg Monthly Income ($6,503), and Avg Age (37). Bar charts showing attrition by Department and Job Role.",
+        },
+        {
+          name: "Page 2 — Attrition Analysis",
+          desc: "Attrition breakdown by Salary Band (Low earners leave most), Tenure Group (0-2 yrs highest risk), Work-Life Balance (score 1 = highest attrition), and Gender distribution. Department and Attrition slicers for dynamic filtering.",
+        },
+        {
+          name: "Page 3 — Employee Insights",
+          desc: "Monthly Income by Job Role, Employee Count by Department (donut), Job Satisfaction by Role, and Avg Income by Attrition — clearly showing employees who left earned $2,100 less than those who stayed.",
+        },
+        {
+          name: "ML Model — Gradient Boosting",
+          desc: "Compared 6 models (Logistic Regression, Decision Tree, Random Forest, Gradient Boosting, KNN, SVM). Gradient Boosting won with ROC-AUC 0.7984. Top attrition drivers: Monthly Income, Age, Total Working Years, Overtime, Job Role.",
+        },
+      ],
+      stats: [
+        { label: "Dataset",     value: "1,470 rows"     },
+        { label: "Attrition",   value: "16.12%"         },
+        { label: "Best Model",  value: "Gradient Boost" },
+        { label: "Accuracy",    value: "84.01%"         },
+        { label: "ROC-AUC",     value: "0.7984"         },
+        { label: "Top Driver",  value: "Monthly Income" },
       ],
     },
   },
@@ -523,12 +571,20 @@ function ProjectCard({ p, i, onOpen }) {
           </div>
         )}
       </div>
-      {/* Click-to-open indicator */}
-      <div className="project__open">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M7 17L17 7M17 7H7M17 7v10"/>
-        </svg>
-      </div>
+      {/* Click-to-open indicator or live link */}
+      {p.link ? (
+        <a href={p.link} target="_blank" rel="noreferrer" className="project__open project__open--live" onClick={e => e.stopPropagation()} aria-label="View live app">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+          </svg>
+        </a>
+      ) : (
+        <div className="project__open">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+      )}
       <div className="project__glow" />
     </article>
   );
