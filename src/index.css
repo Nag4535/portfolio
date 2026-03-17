@@ -770,3 +770,38 @@ ul { list-style: none; }
   .chat-window { width: calc(100vw - 2rem); right: 1rem; bottom: 5.5rem; }
   .chat-bubble { bottom: 1.5rem; right: 1rem; }
 }
+
+/* ── MODAL CTA BUTTON ─────────────────────────────────────────────────────── */
+.modal__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1.5rem;
+  padding: .85rem 2rem;
+  background: var(--m-accent);
+  color: #000;
+  border-radius: var(--r);
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  transition: all .25s var(--ease);
+  border: 1.5px solid var(--m-accent);
+}
+.modal__cta:hover {
+  background: transparent;
+  color: var(--m-accent);
+}
+
+.modal__cta-row {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  margin-top: 1.5rem;
+}
+.modal__cta--outline {
+  background: transparent;
+  color: var(--m-accent);
+  border: 1.5px solid var(--m-accent);
+}
+.modal__cta--outline:hover {
+  background: var(--m-accent);
+  color: #000;
+}

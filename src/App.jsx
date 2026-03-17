@@ -156,6 +156,47 @@ const PROJECTS = [
         { label: "Outcome",    value: "Enterprise governance" },
       ],
     },
+  },,
+  {
+    id: 5, num: "05",
+    title: "HR People Analytics Dashboard",
+    tag: "Power BI · People Analytics", year: "2025",
+    accent: "#2ED573",
+    link: "https://app.powerbi.com/reportEmbed?reportId=67383e9b-386e-405f-be23-3db812c2f57d&autoAuth=true&ctid=63c3c9c1-e824-413f-b435-2f0cabb2828f",
+    link2: "https://app.powerbi.com/reportEmbed?reportId=30740444-b6d6-4797-a2d9-aec31aec1794&autoAuth=true&ctid=63c3c9c1-e824-413f-b435-2f0cabb2828f",
+    desc: "3-page Power BI dashboard analysing IBM HR dataset (1,470 employees). Attrition rate 16.12%, Gradient Boosting ML model with 84% accuracy. Key finding: Overtime employees are 3x more likely to leave.",
+    tech: ["Power BI", "Python", "Scikit-learn", "DAX", "Gradient Boosting"],
+    highlights: [
+      { label: "Employees",   value: "1,470"  },
+      { label: "Attrition",   value: "16.12%" },
+      { label: "ML Accuracy", value: "84%"    },
+      { label: "Pages",       value: "3"      },
+    ],
+    modal: {
+      overview: "End-to-end HR People Analytics project on IBM HR dataset (1,470 employees, 35 features). Built a complete Python EDA and ML pipeline using Gradient Boosting (84% accuracy, ROC-AUC 0.7984) to predict employee attrition, then visualised insights across 3 interactive Power BI dashboard pages.",
+      dashboards: [
+        {
+          name: "Page 1 — HR Overview",
+          desc: "KPI cards showing Total Employees (1,470), Attrition Rate (16.12%), Avg Monthly Income ($6,503), and Avg Age (37). Bar charts for attrition by Department and Job Role.",
+        },
+        {
+          name: "Page 2 — Attrition Analysis",
+          desc: "Attrition breakdown by Salary Band, Tenure Group, Work-Life Balance, and Gender. Key insight: Low salary band has highest attrition. Employees in first 2 years are highest risk.",
+        },
+        {
+          name: "Page 3 — Employee Insights",
+          desc: "Monthly income by Job Role, employee count by Department (R&D 65%), Job Satisfaction scores, and income comparison between employees who left vs stayed.",
+        },
+      ],
+      stats: [
+        { label: "Employees",  value: "1,470"            },
+        { label: "Attrition",  value: "16.12%"           },
+        { label: "Best Model", value: "Gradient Boosting" },
+        { label: "Accuracy",   value: "84.01%"           },
+        { label: "ROC-AUC",    value: "0.7984"           },
+        { label: "Top Driver", value: "Monthly Income"   },
+      ],
+    },
   },
 ];
 
@@ -297,6 +338,29 @@ function ProjectModal({ project, onClose }) {
           <ul className="modal__tech">
             {tech.map(t => <li key={t}>{t}</li>)}
           </ul>
+          {/* View Live buttons */}
+          <div className="modal__cta-row">
+            {project.link && project.link !== "#" && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noreferrer"
+                className="modal__cta"
+              >
+                View Dashboard 1 →
+              </a>
+            )}
+            {project.link2 && (
+              <a
+                href={project.link2}
+                target="_blank"
+                rel="noreferrer"
+                className="modal__cta modal__cta--outline"
+              >
+                View Dashboard 2 →
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
