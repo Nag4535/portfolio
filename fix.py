@@ -1,18 +1,8 @@
 with open('src/App.jsx', 'r') as f:
     content = f.read()
 
-# Fix modal to scroll to top when opened
+# Fix modal to use ref and scroll to top inside modal
 old = '''  useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);'''
-
-new = '''  useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -24,11 +14,21 @@ new = '''  useEffect(() => {
     };
   }, [onClose]);'''
 
+new = '''  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);'''
+
 if old in content:
     content = content.replace(old, new)
-    print("SUCCESS - modal scroll fixed")
+    print("Step 1 SUCCESS")
 else:
-    print("NOT FOUND - scroll fix")
+    print("Step 1 NOT FOUND")
 
 with open('src/App.jsx', 'w') as f:
     f.write(content)

@@ -272,8 +272,6 @@ function ProjectModal({ project, onClose }) {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
-    // Scroll modal to top when opened
-    window.scrollTo({ top: 0, behavior: "smooth" });
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
