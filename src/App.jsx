@@ -15,11 +15,6 @@ const PROJECTS = [
       { label: "ML Accuracy", value: "84%"      },
       { label: "Dashboards",  value: "3 Pages"  },
     ],
-    images: [
-      { src: "/images/hr_page1.png", caption: "Page 1 — HR Overview" },
-      { src: "/images/hr_page2.png", caption: "Page 2 — Attrition Analysis" },
-      { src: "/images/hr_page3.png", caption: "Page 3 — Employee Insights" },
-    ],
     modal: {
       overview: "End-to-end HR People Analytics project on IBM's employee attrition dataset — 1,470 employees × 35 features. Built a complete Python EDA pipeline and Gradient Boosting ML model achieving 84% accuracy and ROC-AUC of 0.80 to predict which employees are likely to leave. Delivered a 3-page Power BI dashboard covering KPI overview, attrition analysis, and employee insights.",
       dashboards: [
@@ -286,9 +281,6 @@ function ProjectModal({ project, onClose }) {
   return (
     <div className="modal-overlay" ref={overlayRef} onClick={handleOverlayClick}>
       <div className="modal" style={{ "--m-accent": accent }}>
-        {/* Dashboard Images Slideshow */}
-        {project.images && <ImageSlideshow images={project.images} />}
-
         {/* Header */}
         <div className="modal__header">
           <div className="modal__meta">
