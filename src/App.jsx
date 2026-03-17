@@ -234,6 +234,30 @@ function Cursor() {
   return (<><div ref={dotRef} className="cur-dot" /><div ref={ringRef} className="cur-ring" /></>);
 }
 
+// ── IMAGE SLIDESHOW ──────────────────────────────────────────────────────────
+function ImageSlideshow({ images }) {
+  const [current, setCurrent] = useState(0);
+  return (
+    <div className="slideshow">
+      <img src={images[current].src} alt={images[current].caption} className="slideshow__img" />
+      <p className="slideshow__caption">{images[current].caption}</p>
+      <div className="slideshow__dots">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            className={`slideshow__dot${i === current ? " slideshow__dot--active" : ""}`}
+            onClick={() => setCurrent(i)}
+          />
+        ))}
+      </div>
+      <div className="slideshow__btns">
+        <button className="slideshow__btn" onClick={() => setCurrent(i => (i - 1 + images.length) % images.length)}>←</button>
+        <button className="slideshow__btn" onClick={() => setCurrent(i => (i + 1) % images.length)}>→</button>
+      </div>
+    </div>
+  );
+}
+
 // ── PROJECT MODAL ─────────────────────────────────────────────────────────────
 function ProjectModal({ project, onClose }) {
   const overlayRef = useRef(null);
@@ -257,6 +281,9 @@ function ProjectModal({ project, onClose }) {
   return (
     <div className="modal-overlay" ref={overlayRef} onClick={handleOverlayClick}>
       <div className="modal" style={{ "--m-accent": accent }}>
+        {/* Dashboard Images Slideshow */}
+        {project.images && <ImageSlideshow images={project.images} />}
+
         {/* Header */}
         <div className="modal__header">
           <div className="modal__meta">
