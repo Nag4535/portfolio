@@ -1,14 +1,34 @@
 with open('src/App.jsx', 'r') as f:
     content = f.read()
 
-old = '    modal: {\n      overview: "End-to-end HR People Analytics project on IBM'
+# Fix modal to scroll to top when opened
+old = '''  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);'''
 
-new = '    images: [\n      { src: "/images/hr_page1.png", caption: "Page 1 — HR Overview" },\n      { src: "/images/hr_page2.png", caption: "Page 2 — Attrition Analysis" },\n      { src: "/images/hr_page3.png", caption: "Page 3 — Employee Insights" },\n    ],\n    modal: {\n      overview: "End-to-end HR People Analytics project on IBM'
+new = '''  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    // Scroll modal to top when opened
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);'''
 
 if old in content:
     content = content.replace(old, new)
-    with open('src/App.jsx', 'w') as f:
-        f.write(content)
-    print("SUCCESS")
+    print("SUCCESS - modal scroll fixed")
 else:
-    print("NOT FOUND")
+    print("NOT FOUND - scroll fix")
+
+with open('src/App.jsx', 'w') as f:
+    f.write(content)
