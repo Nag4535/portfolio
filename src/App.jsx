@@ -168,6 +168,7 @@ const PROJECTS = [
     tag: "ML · DL · ETL", year: "2025",
     accent: "#2ED573",
     link: "https://customer360-intelligence-mf9fuabtqg9drmdsnwqnbd.streamlit.app/",
+    github: "https://github.com/Nag4535/customer360-intelligence",
     desc: "End-to-end customer analytics on Instacart dataset — 206,209 customers, 33M+ orders, 49,688 products. ETL pipeline, RFM segmentation (7 tiers), Gradient Boosting churn prediction (ROC-AUC 0.7895), PyTorch Neural Network, and 5-page Streamlit dashboard. (Live demo: 30K sample)",
     tech: ["Python", "XGBoost", "PyTorch", "Streamlit", "SQLite", "Scikit-learn", "Plotly"],
     highlights: [
@@ -177,6 +178,7 @@ const PROJECTS = [
       { label: "Live Demo", value: "Deployed" },
     ],
     modal: {
+      note: "Live demo uses 30K sample — Full 206K dataset, 5 notebooks & complete code on GitHub",
       overview: "End-to-end Customer 360 Intelligence Platform built on the real Instacart dataset — 206,209 customers, 33M+ order records, and 49,688 products across 21 departments. Covers ETL, EDA, RFM segmentation, ML churn prediction, Deep Learning, and a deployed 5-page Streamlit dashboard. Live demo uses 30K customer sample due to hosting limits — full 206K dataset, all 5 notebooks, and complete code available on GitHub.",
       dashboards: [
         { name: "ETL Pipeline", desc: "Automated pipeline joining 6 Instacart CSV files into SQLite database. Feature engineering: day_name, time_of_day, ShippingDays, SalesBand. Master table: 33M+ rows." },
@@ -330,6 +332,23 @@ function ProjectModal({ project, onClose }) {
 
         <div className="modal__body">
           <h2 className="modal__title">{title}</h2>
+          {modal.note && (
+            <div className="modal__note">
+              <span>📌</span> {modal.note}
+            </div>
+          )}
+          <div className="modal__links">
+            {project.link && (
+              <a href={project.link} target="_blank" rel="noreferrer" className="btn btn--primary btn--sm">
+                Live Demo →
+              </a>
+            )}
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noreferrer" className="btn btn--outline btn--sm">
+                View on GitHub →
+              </a>
+            )}
+          </div>
           <p className="modal__overview">{modal.overview}</p>
 
           {/* Stats grid */}
