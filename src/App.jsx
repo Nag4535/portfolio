@@ -168,7 +168,7 @@ const PROJECTS = [
     tag: "ML · DL · ETL", year: "2025",
     accent: "#2ED573",
     link: "https://customer360-intelligence-mf9fuabtqg9drmdsnwqnbd.streamlit.app/",
-    desc: "End-to-end customer analytics on Instacart dataset — 206,209 customers, 33M+ orders, 49,688 products. ETL pipeline, RFM segmentation (7 tiers), Gradient Boosting churn prediction (ROC-AUC 0.7895), PyTorch Neural Network, and 5-page Streamlit dashboard.",
+    desc: "End-to-end customer analytics on Instacart dataset — 206,209 customers, 33M+ orders, 49,688 products. ETL pipeline, RFM segmentation (7 tiers), Gradient Boosting churn prediction (ROC-AUC 0.7895), PyTorch Neural Network, and 5-page Streamlit dashboard. (Live demo: 30K sample)",
     tech: ["Python", "XGBoost", "PyTorch", "Streamlit", "SQLite", "Scikit-learn", "Plotly"],
     highlights: [
       { label: "Customers", value: "206K"     },
@@ -177,7 +177,7 @@ const PROJECTS = [
       { label: "Live Demo", value: "Deployed" },
     ],
     modal: {
-      overview: "End-to-end Customer 360 Intelligence Platform built on the real Instacart dataset — 206,209 customers, 33M+ order records, and 49,688 products across 21 departments. Covers ETL, EDA, RFM segmentation, ML churn prediction, Deep Learning, and a deployed 5-page Streamlit dashboard. Live demo uses 30K sample — full dataset on GitHub.",
+      overview: "End-to-end Customer 360 Intelligence Platform built on the real Instacart dataset — 206,209 customers, 33M+ order records, and 49,688 products across 21 departments. Covers ETL, EDA, RFM segmentation, ML churn prediction, Deep Learning, and a deployed 5-page Streamlit dashboard. Live demo uses 30K customer sample due to hosting limits — full 206K dataset, all 5 notebooks, and complete code available on GitHub.",
       dashboards: [
         { name: "ETL Pipeline", desc: "Automated pipeline joining 6 Instacart CSV files into SQLite database. Feature engineering: day_name, time_of_day, ShippingDays, SalesBand. Master table: 33M+ rows." },
         { name: "EDA Key Findings", desc: "206,209 users, avg 16.6 orders/user, 58.97% reorder rate, Produce #1 department, Banana #1 product with 491,291 orders, peak ordering Saturday 10am." },
