@@ -478,15 +478,19 @@ function About() {
         </div>
         <div className="about__right">
           <p className="about__body">
-            I'm <strong>Nagarajulu Reddy Nalla</strong>, a Data Analyst with a Master's in
-            Data Science &amp; Analytics from Florida Atlantic University (GPA 3.96/4.0)
-            and hands-on experience designing data models, building reporting pipelines, and
-            delivering people-centered insights that drive strategic decisions.
+            Data is the new currency — and I know how to make it work. I'm <strong>Nagarajulu Reddy Nalla</strong>,
+            an emerging tech professional with a passion for turning raw data into real-world impact.
+            Skilled across AI engineering, data engineering, data science, and Power BI development,
+            I bring a rare combination of technical depth and analytical thinking to every project I touch.
           </p>
           <p className="about__body">
-            I specialise in building end-to-end AI and data solutions — from intelligent ETL pipelines
-            and predictive ML models to deep learning systems and executive Power BI dashboards.
-            I bridge the gap between raw data and real business intelligence.
+            I don't just work with data — I engineer it, analyze it, model it, and visualize it.
+            From building a <strong>Customer 360 Intelligence Platform</strong> (206K customers, 33M+ orders)
+            to designing an <strong>HR People Analytics Dashboard</strong> that empowers smarter workforce decisions,
+            my work spans the full data lifecycle. I build intelligent pipelines, craft predictive models,
+            and deliver dashboards that don't just look good — they drive decisions.
+            Early in my career, already delivering real impact — sharp skills, bold thinking, and zero limits.
+            <em>This is just the beginning.</em>
           </p>
           <div className="about__stats">
             {[["3.96","GPA / 4.0"],["28%","Reporting improvement"],["25%","Manual effort saved"]].map(([n,l]) => (
