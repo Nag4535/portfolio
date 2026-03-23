@@ -443,11 +443,11 @@ function Hero() {
         <h1 className="hero__title">
           <span>Nagarajulu</span>
           <span className="hero__title--outline">Reddy Nalla</span>
-          <span className="hero__title--small">Data Analyst · BI · People Analytics</span>
+          <span className="hero__title--small">AI Engineer · Data Scientist · ML Engineer · Power BI Developer</span>
         </h1>
         <p className="hero__sub">
-          I turn complex, unrelated data points into clear, trustworthy reporting solutions —
-          empowering non-technical stakeholders to make smarter, faster decisions.
+          I engineer intelligent pipelines, craft predictive ML models, and deliver dashboards
+          that don't just look good — they drive real business decisions.
         </p>
         <div className="hero__cta">
           <a href="#projects" className="btn btn--primary">View Projects</a>
@@ -474,7 +474,7 @@ function About() {
       <div className="container about__grid">
         <div className="about__left">
           <p className="section__eyebrow">/ About Me</p>
-          <h2 className="section__title">Data that<br /><em>drives decisions.</em></h2>
+          <h2 className="section__title">Turning data<br /><em>into intelligence.</em></h2>
         </div>
         <div className="about__right">
           <p className="about__body">
@@ -484,9 +484,9 @@ function About() {
             delivering people-centered insights that drive strategic decisions.
           </p>
           <p className="about__body">
-            I specialise in SQL, Power BI, Tableau, and Python-based analytics workflows,
-            with a strong product-centric mindset toward data discoverability and quality.
-            I bridge the gap between raw data and real business value.
+            I specialise in building end-to-end AI and data solutions — from intelligent ETL pipelines
+            and predictive ML models to deep learning systems and executive Power BI dashboards.
+            I bridge the gap between raw data and real business intelligence.
           </p>
           <div className="about__stats">
             {[["3.96","GPA / 4.0"],["28%","Reporting improvement"],["25%","Manual effort saved"]].map(([n,l]) => (
@@ -757,7 +757,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <span className="nav__logo">NR<span className="accent">.</span></span>
-        <p className="footer__copy">© {new Date().getFullYear()} Nagarajulu Reddy Nalla — Data Analyst</p>
+        <p className="footer__copy">© {new Date().getFullYear()} Nagarajulu Reddy Nalla — AI Engineer · Data Scientist · ML Engineer</p>
         <a href="#hero" className="footer__top">↑ Top</a>
       </div>
     </footer>
