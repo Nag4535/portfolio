@@ -197,7 +197,42 @@ const PROJECTS = [
         { label: "Notebooks", value: "5 Complete" },
       ],
     },
-  }
+  },
+  {
+    id: 6, num: "06",
+    title: "Enterprise Multi-Agent AI Platform",
+    tag: "AI Agents · LLM · CrewAI", year: "2025",
+    accent: "#FF6B35",
+    link: "https://multiagent-ai-system4535-jsywbxbaze8xtdxfnrlwsy.streamlit.app/",
+    github: "https://github.com/Nag4535/MULTIAGENT-AI-SYSTEM4535",
+    desc: "Enterprise-grade AI platform with 7 specialized AI agents powered by LLaMA 3.3 via Groq. Upload any dataset — agents automatically perform quality inspection, statistical analysis, ML recommendations, visualization design, executive reporting, business advisory, and strategic planning.",
+    tech: ["Python", "Groq API", "LLaMA 3.3", "Streamlit", "Scikit-learn", "Plotly", "FPDF"],
+    highlights: [
+      { label: "AI Agents",  value: "7"          },
+      { label: "LLM Model",  value: "LLaMA 3.3"  },
+      { label: "Features",   value: "10+"         },
+      { label: "Live App",   value: "Deployed"    },
+    ],
+    modal: {
+      overview: "Enterprise-grade Multi-Agent AI Analytics Platform powered by 7 specialized LLaMA 3.3 agents via Groq API. Upload any CSV, Excel, or JSON dataset and the platform automatically runs quality inspection, statistical analysis, ML model recommendations, visualization design, executive reporting, business advisory, and 90-day strategic planning. Features include Auto ML with Random Forest, Smart Data Cleaning, Multi-file Smart Join Wizard, Anomaly Detection with Isolation Forest, Time Series Analysis, Natural Language to Chart generation, PDF report export, and an interactive chat interface.",
+      dashboards: [
+        { name: "7 AI Agents", desc: "Quality Inspector, Statistical Analyst, ML Expert, Visualization Designer, Report Writer, Business Advisor, Strategy Director — each powered by LLaMA 3.3 via Groq API with rotating API keys for speed." },
+        { name: "Smart Data Cleaning", desc: "Auto-detects missing values, fills numeric with median, fills text with mode, drops columns >50% missing, removes outliers using 3x IQR method. Zero manual input required." },
+        { name: "Multi-file Smart Join Wizard", desc: "Upload multiple CSVs — system auto-detects relationships via common columns, suggests join strategy, and merges files automatically. Supports 33M+ row datasets." },
+        { name: "Auto ML", desc: "Automatically detects classification vs regression, trains Random Forest model, shows feature importance chart, actual vs predicted chart, and model accuracy/R² score." },
+        { name: "Anomaly Detection", desc: "Isolation Forest algorithm detects unusual rows automatically. Adjustable sensitivity slider, scatter plot visualization, and CSV export of anomalous rows." },
+        { name: "Natural Language to Chart", desc: "Type any chart description in plain English — AI generates the exact Plotly chart automatically. Supports bar, line, scatter, pie, histogram, box charts." },
+      ],
+      stats: [
+        { label: "AI Agents",    value: "7"           },
+        { label: "LLM",          value: "LLaMA 3.3"   },
+        { label: "File Formats", value: "CSV/Excel/JSON" },
+        { label: "ML Models",    value: "Auto-detect"  },
+        { label: "Features",     value: "10+"          },
+        { label: "Deployment",   value: "Streamlit"    },
+      ],
+    },
+  },
 ];
 
 
