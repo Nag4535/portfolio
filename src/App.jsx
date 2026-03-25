@@ -240,27 +240,31 @@ const EXPERIENCE = [
   {
     role: "Data Analyst", company: "Eco Servants", location: "USA", period: "Oct 2025 – Present",
     bullets: [
-      "Designed data models improving reporting reliability by 28%",
-      "Built Power BI & Tableau dashboards for executive & non-technical audiences",
-      "Optimised SQL query efficiency across large-scale structured datasets",
-      "Developed automated data refresh workflows in AWS & Azure",
+      "Built end-to-end AI analytics pipelines processing large-scale datasets using Python, SQL and AWS",
+      "Designed Power BI & Tableau dashboards improving executive reporting reliability by 28%",
+      "Developed automated ETL workflows in AWS & Azure reducing manual effort by 35%",
+      "Implemented ML models for predictive analytics driving data-driven business decisions",
+      "Optimised SQL query efficiency across large-scale structured datasets using advanced indexing",
     ],
   },
   {
     role: "Data Analyst Intern", company: "Kominfo Solutions", location: "India", period: "Mar 2022 – Feb 2023",
     bullets: [
-      "Built relational data transformation workflows, improving reporting efficiency by 18%",
-      "Automated data refresh workflows, reducing manual reporting effort by 25%",
+      "Built relational data transformation pipelines improving reporting efficiency by 18%",
       "Designed KPI dashboards with forecasting insights for non-technical stakeholders",
+      "Automated data refresh workflows reducing manual reporting effort by 25%",
       "Generated executive reports translating complex datasets into clear business narratives",
+      "Developed data models and ETL processes for structured and semi-structured data sources",
     ],
   },
 ];
 
 const SKILLS = [
-  { category: "Analytics & BI",  items: ["Power BI (DAX)", "Tableau", "Excel (Advanced)", "Matplotlib", "Seaborn"] },
-  { category: "Programming",     items: ["SQL (MySQL · SQL Server · Oracle)", "Python (Pandas · NumPy)", "R", "KQL"] },
-  { category: "Cloud & Data",    items: ["AWS (EC2 · S3 · Lambda)", "Microsoft Azure", "ETL Pipelines", "Data Governance"] },
+  { category: "AI & Machine Learning", items: ["LLM & AI Agents (CrewAI · LangChain)", "XGBoost · Gradient Boosting", "PyTorch · Neural Networks", "Scikit-learn · Random Forest", "Predictive Modelling · NLP"] },
+  { category: "Data Engineering & ETL", items: ["ETL Pipelines · SQLAlchemy", "SQLite · PostgreSQL · MySQL", "Apache Spark (basics)", "Data Warehousing · Data Modelling", "REST APIs · JSON · Web Scraping"] },
+  { category: "Analytics & BI",  items: ["Power BI (DAX · Power Query)", "Tableau · Excel (Advanced)", "Matplotlib · Seaborn · Plotly", "Streamlit · Data Storytelling", "KQL · Statistical Analysis"] },
+  { category: "Programming",     items: ["Python (Pandas · NumPy · SciPy)", "SQL (MySQL · SQL Server · Oracle)", "R · KQL", "Git · GitHub · CI/CD", "Jupyter · VS Code"] },
+  { category: "Cloud & DevOps",    items: ["AWS (EC2 · S3 · Lambda · RDS)", "Microsoft Azure · Azure ML", "Streamlit Cloud · Vercel", "Docker (basics)", "Data Governance · Security"] },
 ];
 
 // ── HOOKS ─────────────────────────────────────────────────────────────────────
@@ -514,21 +518,23 @@ function About() {
         <div className="about__right">
           <p className="about__body">
             Data is the new currency — and I know how to make it work. I'm <strong>Nagarajulu Reddy Nalla</strong>,
-            an emerging tech professional with a passion for turning raw data into real-world impact.
-            Skilled across AI engineering, data engineering, data science, and Power BI development,
-            I bring a rare combination of technical depth and analytical thinking to every project I touch.
+            an AI Engineer, Data Scientist, and Power BI Developer with a Master's in Data Science & Analytics
+            from Florida Atlantic University (GPA 3.96/4.0) and AWS Cloud Practitioner certification.
+            I bring a rare combination of technical depth and analytical thinking — building intelligent
+            systems that turn raw data into real business impact.
           </p>
           <p className="about__body">
             I don't just work with data — I engineer it, analyze it, model it, and visualize it.
-            From building a <strong>Customer 360 Intelligence Platform</strong> (206K customers, 33M+ orders)
-            to designing an <strong>HR People Analytics Dashboard</strong> that empowers smarter workforce decisions,
-            my work spans the full data lifecycle. I build intelligent pipelines, craft predictive models,
-            and deliver dashboards that don't just look good — they drive decisions.
-            Early in my career, already delivering real impact — sharp skills, bold thinking, and zero limits.
-            <em>This is just the beginning.</em>
+            From building an <strong>Enterprise Multi-Agent AI Platform</strong> with 7 specialized AI agents,
+            to a <strong>Customer 360 Intelligence Platform</strong> processing 33M+ orders,
+            to <strong>HR People Analytics</strong> with ML attrition prediction —
+            my work spans the full AI and data lifecycle. I build intelligent pipelines,
+            craft predictive ML models, deploy deep learning systems, and deliver dashboards
+            that don't just look good — they drive decisions.
+            <em>Early in my career, already delivering real impact. This is just the beginning.</em>
           </p>
           <div className="about__stats">
-            {[["3.96","GPA / 4.0"],["28%","Reporting improvement"],["25%","Manual effort saved"]].map(([n,l]) => (
+            {[["3.96","GPA / 4.0"],["6+","AI & Data Projects"],["33M+","Records Processed"]].map(([n,l]) => (
               <div key={l} className="about__stat">
                 <span className="about__stat-num">{n}</span>
                 <span className="about__stat-label">{l}</span>
