@@ -821,7 +821,7 @@ ABOUT NAGARAJULU:
 
 EDUCATION:
 - M.S. Data Science & Analytics — Florida Atlantic University, FL (GPA 3.96/4.0, Dec 2023 – Dec 2025)
-- B.Tech Computer Science & Engineering — Panimalar Institute of Technology, India (GPA 8.5/10, Apr 2019 – Apr 2023)
+- B.Tech Computer Science & Engineering — Panimalar Institute of Technology, India (GPA 8.98/10, Apr 2019 – Apr 2023)
 - AWS Certified Cloud Practitioner (Issued Feb 13, 2026 · Expires Feb 13, 2029)
 
 EXPERIENCE:
