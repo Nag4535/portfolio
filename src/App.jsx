@@ -694,7 +694,7 @@ function Skills() {
           <div className="edu__card">
             <span className="edu__label">B.Tech Computer Science &amp; Engineering</span>
             <span className="edu__school">Panimalar Institute of Technology, India</span>
-            <span className="edu__detail">GPA 8.5 / 10 · Apr 2019 – Apr 2023</span>
+            <span className="edu__detail">GPA 8.98 / 10 · Apr 2019 – Apr 2023</span>
           </div>
           <a
             className="edu__card edu__card--cert"
