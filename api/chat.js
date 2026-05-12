@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -17,7 +16,6 @@ export default async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
-    // Build messages array with system message first
     const groqMessages = [
       { role: "system", content: system },
       ...messages,
@@ -30,25 +28,24 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model:      "llama-3.1-8b-instant",
-        max_tokens: 512,
+        model:       "llama-3.3-70b-versatile",
+        max_tokens:  512,
         temperature: 0.7,
-        messages:   groqMessages,
+        messages:    groqMessages,
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Groq API error:", JSON.stringify(data));
+      console.error("Groq API error status:", response.status);
+      console.error("Groq API error body:", JSON.stringify(data));
       return res.status(500).json({
-        content: [{ type: "text", text: "Sorry, I'm having trouble right now. Please try again!" }],
+        content: [{ type: "text", text: `Error ${response.status}: ${data?.error?.message || "Groq API failed"}` }],
       });
     }
 
-    // Extract reply and return in format App.jsx expects
     const text = data?.choices?.[0]?.message?.content || "Sorry, I couldn't get a response.";
-
     return res.status(200).json({
       content: [{ type: "text", text }],
     });
@@ -56,7 +53,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("Proxy error:", error.message);
     return res.status(500).json({
-      content: [{ type: "text", text: "Network error. Please try again!" }],
+      content: [{ type: "text", text: `Network error: ${error.message}` }],
     });
   }
 }
