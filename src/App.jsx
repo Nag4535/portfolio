@@ -16,6 +16,7 @@ const PROJECTS = [
       { label: "Drift Monitor", value: "PSI ≥ 0.15" },
       { label: "Inference",     value: "FastAPI" },
     ],
+    link: "https://market-intel-ai-agent-rc5sq4bczwno3cfpnoncag.streamlit.app/",
     github: "https://github.com/Nag4535/market-intel-mlops",
     modal: {
       overview: "End-to-end MLOps platform for financial sentiment analysis. Fine-tuned ProsusAI/FinBERT on the Financial PhraseBank dataset (2,264 samples, 'sentences_allagree' subset) achieving 97.79% test accuracy and 97.81% weighted F1 — matching human expert-level performance. Features full MLOps lifecycle with MLflow tracking, champion/challenger model promotion, FastAPI inference server, and Evidently AI drift detection triggering automated retraining when PSI exceeds 0.15.",
