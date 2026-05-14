@@ -16,7 +16,6 @@ const PROJECTS = [
       { label: "Drift Monitor", value: "PSI ≥ 0.15" },
       { label: "Inference",     value: "FastAPI" },
     ],
-    link: "https://market-intel-ai-agent-rc5sq4bczwno3cfpnoncag.streamlit.app/",
     github: "https://github.com/Nag4535/market-intel-mlops",
     modal: {
       overview: "End-to-end MLOps platform for financial sentiment analysis. Fine-tuned ProsusAI/FinBERT on the Financial PhraseBank dataset (2,264 samples, 'sentences_allagree' subset) achieving 97.79% test accuracy and 97.81% weighted F1 — matching human expert-level performance. Features full MLOps lifecycle with MLflow tracking, champion/challenger model promotion, FastAPI inference server, and Evidently AI drift detection triggering automated retraining when PSI exceeds 0.15.",
@@ -1030,8 +1029,8 @@ img{max-width:100%;}
 .pcard:hover .pcard__glow{opacity:1;}
 
 /* MODAL */
-.modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
-.modal{background:#0D0D1A;border:1px solid #252538;border-radius:20px;width:90%;max-width:740px;max-height:80vh;overflow-y:auto;position:relative;box-shadow:0 30px 90px rgba(0,0,0,0.9);}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.modal{background:#0C0C16;border:1px solid #252538;border-radius:20px;width:100%;max-width:760px;max-height:85vh;overflow-y:auto;position:relative;margin:auto;box-shadow:0 25px 80px rgba(0,0,0,0.8);}
 .modal__head{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1;border-radius:20px 20px 0 0;}
 .modal__tag{font-size:10px;background:var(--bg3);color:var(--m-accent,var(--accent));border:1px solid color-mix(in srgb,var(--m-accent,var(--accent)) 30%,transparent);padding:4px 12px;border-radius:100px;font-weight:600;}
 .modal__year{font-size:11px;color:var(--text3);font-family:var(--font-m);}
