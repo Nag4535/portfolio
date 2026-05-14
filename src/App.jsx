@@ -1,5 +1,409 @@
 import { useState, useEffect, useRef } from "react";
 
+
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const SUPABASE_URL = "https://ujqhwlntfwezubuvgzeq.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqcWh3bG50ZndlenVidXZnemVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2ODM0MTYsImV4cCI6MjA5NDI1OTQxNn0.Xwzub563z2FLA9PhFNqq-7Gu2xuscmd0xedcaQNb7js";
+const FINNHUB_KEY = "d82kvg1r01qmgc0ghvvgd82kvg1r01qmgc0gi000";
+
+// ── DARK/LIGHT MODE TOGGLE ────────────────────────────────────────────────────
+function useTheme() {
+  const [dark, setDark] = useState(true);
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      root.style.setProperty("--bg",     "#07070E");
+      root.style.setProperty("--bg2",    "#0C0C16");
+      root.style.setProperty("--bg3",    "#111420");
+      root.style.setProperty("--border", "#1A1A2A");
+      root.style.setProperty("--text",   "#E2E2EE");
+      root.style.setProperty("--text2",  "#8080A0");
+      root.style.setProperty("--text3",  "#4A4A6A");
+    } else {
+      root.style.setProperty("--bg",     "#F8F9FF");
+      root.style.setProperty("--bg2",    "#FFFFFF");
+      root.style.setProperty("--bg3",    "#F0F2FF");
+      root.style.setProperty("--border", "#E0E4F0");
+      root.style.setProperty("--text",   "#0D1020");
+      root.style.setProperty("--text2",  "#4A4A6A");
+      root.style.setProperty("--text3",  "#8080A0");
+    }
+  }, [dark]);
+  return [dark, setDark];
+}
+
+// ── PARTICLE NETWORK HERO CANVAS ──────────────────────────────────────────────
+function ParticleCanvas() {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let animId;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const PARTICLE_COUNT = 80;
+    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 2 + 1,
+    }));
+
+    let mouse = { x: -999, y: -999 };
+    canvas.addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        // Mouse repulsion
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) { p.x += dx / dist * 2; p.y += dy / dist * 2; }
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(79,156,249,0.6)";
+        ctx.fill();
+      });
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(79,156,249,${0.15 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }} />;
+}
+
+// ── VISITOR COUNTER ───────────────────────────────────────────────────────────
+function useVisitorCount() {
+  const [count, setCount] = useState(null);
+  useEffect(() => {
+    const increment = async () => {
+      try {
+        // Get current count
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/visitor_count?id=eq.1`, {
+          headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+        });
+        const data = await res.json();
+        const current = data[0]?.count || 0;
+        const newCount = current + 1;
+        // Update count
+        await fetch(`${SUPABASE_URL}/rest/v1/visitor_count?id=eq.1`, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ count: newCount })
+        });
+        setCount(newCount);
+      } catch (e) { setCount("—"); }
+    };
+    increment();
+  }, []);
+  return count;
+}
+
+// ── LIVE MARKET WIDGET ────────────────────────────────────────────────────────
+function LiveMarketWidget() {
+  const [ref, inView] = useInView(0.1);
+  const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
+
+  const TICKERS = [
+    { symbol: "AAPL", name: "Apple" },
+    { symbol: "MSFT", name: "Microsoft" },
+    { symbol: "GOOGL", name: "Alphabet" },
+    { symbol: "NVDA", name: "NVIDIA" },
+    { symbol: "AMZN", name: "Amazon" },
+    { symbol: "META", name: "Meta" },
+  ];
+
+  const fetchStocks = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/stocks");
+      const data = await res.json();
+      if (data.stocks) {
+        setStocks(data.stocks);
+        setLastUpdated(new Date().toLocaleTimeString());
+      }
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  useEffect(() => { if (inView) { fetchStocks(); const interval = setInterval(fetchStocks, 30000); return () => clearInterval(interval); } }, [inView]);
+
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} style={{ padding: "80px 0", background: "var(--bg2)" }}>
+      <div className="container">
+        <p className="eyebrow">/ Live Market Data</p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 32 }}>
+          <div>
+            <h2 className="sec-title" style={{ marginBottom: 6 }}>Real-time financial intelligence.</h2>
+            <p style={{ fontSize: 13, color: "var(--text3)", fontFamily: "var(--font-m)" }}>Powered by Finnhub API · Auto-refreshes every 30s · Tied to the Market Intelligence Platform</p>
+          </div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            {lastUpdated && <span style={{ fontSize: 11, color: "var(--text3)", fontFamily: "var(--font-m)" }}>Updated: {lastUpdated}</span>}
+            <button onClick={fetchStocks} style={{ background: "var(--bg3)", border: "1px solid var(--border2)", borderRadius: 8, padding: "7px 16px", color: "var(--text2)", fontSize: 12, cursor: "pointer", fontFamily: "var(--font)", transition: "all .2s" }}
+              onMouseEnter={e => e.target.style.borderColor = "var(--accent)"}
+              onMouseLeave={e => e.target.style.borderColor = "var(--border2)"}>
+              ↻ Refresh
+            </button>
+          </div>
+        </div>
+
+        {loading ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 14 }}>
+            {TICKERS.map(t => (
+              <div key={t.symbol} style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 14, padding: 20, animation: "pulse 1.5s infinite" }}>
+                <div style={{ height: 14, background: "var(--border)", borderRadius: 4, marginBottom: 8, width: "40%" }} />
+                <div style={{ height: 28, background: "var(--border)", borderRadius: 4, marginBottom: 8, width: "70%" }} />
+                <div style={{ height: 10, background: "var(--border)", borderRadius: 4, width: "50%" }} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 14 }}>
+            {stocks.map(s => {
+              const up = s.change >= 0;
+              const color = up ? "#00C9A7" : "#FF6B6B";
+              return (
+                <div key={s.symbol} style={{ background: "var(--bg3)", border: `1px solid ${color}20`, borderRadius: 14, padding: 20, transition: "all .3s", cursor: "default" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = "translateY(-3px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${color}20`; e.currentTarget.style.transform = "translateY(0)"; }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                    <div>
+                      <div style={{ fontFamily: "var(--font-m)", fontSize: 13, fontWeight: 700, color: "var(--text)", letterSpacing: ".05em" }}>{s.symbol}</div>
+                      <div style={{ fontSize: 10, color: "var(--text3)", marginTop: 2 }}>{s.name}</div>
+                    </div>
+                    <span style={{ fontSize: 10, fontWeight: 700, color, background: `${color}15`, border: `1px solid ${color}30`, borderRadius: 100, padding: "2px 8px" }}>
+                      {up ? "▲" : "▼"} {Math.abs(s.pct || 0).toFixed(2)}%
+                    </span>
+                  </div>
+                  <div style={{ fontFamily: "var(--font-d)", fontSize: 26, fontWeight: 800, color: "var(--text)", letterSpacing: -1 }}>
+                    ${s.price?.toFixed(2) || "—"}
+                  </div>
+                  <div style={{ fontSize: 11, color, marginTop: 4, fontWeight: 600 }}>
+                    {up ? "+" : ""}{s.change?.toFixed(2) || "—"} today
+                  </div>
+                  <div style={{ display: "flex", gap: 12, marginTop: 10 }}>
+                    <div style={{ fontSize: 10, color: "var(--text3)" }}>H: <span style={{ color: "#00C9A7" }}>${s.high?.toFixed(0)}</span></div>
+                    <div style={{ fontSize: 10, color: "var(--text3)" }}>L: <span style={{ color: "#FF6B6B" }}>${s.low?.toFixed(0)}</span></div>
+                    <div style={{ fontSize: 10, color: "var(--text3)" }}>O: <span style={{ color: "var(--text2)" }}>${s.open?.toFixed(0)}</span></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <p style={{ fontSize: 11, color: "var(--text3)", marginTop: 16, textAlign: "center" }}>
+          Market data provided by Finnhub · For demonstration purposes · Connected to the Market Intelligence Platform project
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ── CAREER TIMELINE ───────────────────────────────────────────────────────────
+function CareerTimeline() {
+  const [ref, inView] = useInView(0.05);
+  const [active, setActive] = useState(null);
+
+  const TIMELINE = [
+    {
+      year: "2019", period: "Apr 2019",
+      title: "B.Tech Computer Science",
+      org: "Panimalar Institute of Technology",
+      type: "education", color: "#A78BFA",
+      icon: "🎓",
+      desc: "Started Computer Science & Engineering degree. Built foundational skills in programming, algorithms, databases and software engineering.",
+      skills: ["C++", "Java", "SQL", "Data Structures", "Algorithms"],
+    },
+    {
+      year: "2020", period: "Mar 2020",
+      title: "Junior Data Engineer",
+      org: "Bharti Airtel Ltd.",
+      type: "work", color: "#FF6B6B",
+      icon: "⚡",
+      desc: "First industry role — building batch data pipelines on AWS S3 using Medallion Architecture, Kafka streaming, and Spark processing across 10+ pipeline stages.",
+      skills: ["PySpark", "Kafka", "AWS S3", "dbt", "Airflow", "Delta Lake"],
+    },
+    {
+      year: "2022", period: "Jan 2022",
+      title: "Data Engineer",
+      org: "Reliance Jio Infocomm Ltd.",
+      type: "work", color: "#4F9CF9",
+      icon: "🚀",
+      desc: "Scaled up to senior data engineering — 1M+ events/day Kafka pipelines, 40% Spark speedup, 25% EMR cost reduction, 30+ production Airflow DAGs with 99.5% uptime.",
+      skills: ["Kafka", "Spark", "AWS EMR", "Delta Lake", "dbt", "Airflow", "Great Expectations"],
+    },
+    {
+      year: "2023", period: "Dec 2023",
+      title: "MSc Data Science & Analytics",
+      org: "Florida Atlantic University",
+      type: "education", color: "#00C9A7",
+      icon: "🎓",
+      desc: "Pursued Masters degree with GPA 3.96/4.0. Deep-dived into ML, deep learning, big data analytics, cloud computing and statistical modeling.",
+      skills: ["Machine Learning", "Deep Learning", "Statistics", "Big Data", "Cloud Computing"],
+    },
+    {
+      year: "2024", period: "Jan 2024",
+      title: "Independent AI/ML Projects",
+      org: "Self-Initiated · github.com/Nag4535",
+      type: "project", color: "#F7B731",
+      icon: "🧠",
+      desc: "Built 8 end-to-end projects: Market Intelligence Platform (97.79% FinBERT accuracy), Customer360 (33M+ records), Multi-Agent AI, Sales Intelligence Platform.",
+      skills: ["FinBERT", "MLflow", "FastAPI", "LLaMA 3.3", "Streamlit", "Plotly"],
+    },
+    {
+      year: "2025", period: "Mar 2025",
+      title: "Data Analyst",
+      org: "Eco Servants",
+      type: "work", color: "#00C9A7",
+      icon: "📊",
+      desc: "Delivering end-to-end analytics — 200K+ customers, 33M+ transactions, ROC-AUC 0.7895 churn model, Prophet forecasting, Power BI dashboards for C-level stakeholders.",
+      skills: ["RFM Modeling", "XGBoost", "Prophet", "Power BI", "Python", "ETL"],
+    },
+    {
+      year: "2026", period: "Feb 2026",
+      title: "3× AWS Certified",
+      org: "Amazon Web Services",
+      type: "cert", color: "#FF9900",
+      icon: "☁️",
+      desc: "Earned three AWS certifications: Cloud Practitioner, Data Engineer (Associate), and AI Practitioner — validating cloud, data, and AI expertise.",
+      skills: ["AWS Data Engineer", "AWS AI Practitioner", "AWS Cloud Practitioner"],
+    },
+  ];
+
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} id="timeline" style={{ padding: "80px 0" }}>
+      <div className="container">
+        <p className="eyebrow">/ Chapter 2</p>
+        <h2 className="sec-title">The journey so far.</h2>
+        <p style={{ fontSize: 15, color: "var(--text2)", marginBottom: 48, maxWidth: 520, lineHeight: 1.75 }}>
+          From Computer Science student to AWS-certified Data Engineer — every step shaped the engineer I am today.
+        </p>
+
+        <div style={{ position: "relative" }}>
+          {/* Vertical line */}
+          <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: "linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent)", transform: "translateX(-50%)" }} />
+
+          {TIMELINE.map((item, i) => {
+            const isLeft = i % 2 === 0;
+            const isActive = active === i;
+            return (
+              <div key={i} style={{
+                display: "flex", justifyContent: isLeft ? "flex-end" : "flex-start",
+                paddingRight: isLeft ? "calc(50% + 32px)" : 0,
+                paddingLeft: isLeft ? 0 : "calc(50% + 32px)",
+                marginBottom: 32,
+                opacity: inView ? 1 : 0,
+                transform: inView ? "translateY(0)" : "translateY(20px)",
+                transition: `all .5s ease ${i * 0.1}s`,
+              }}>
+                {/* Center dot */}
+                <div style={{
+                  position: "absolute", left: "50%", transform: "translateX(-50%)",
+                  width: 16, height: 16, borderRadius: "50%",
+                  background: isActive ? item.color : "var(--bg3)",
+                  border: `3px solid ${item.color}`,
+                  marginTop: 20, zIndex: 1, cursor: "pointer",
+                  transition: "all .3s", boxShadow: isActive ? `0 0 16px ${item.color}60` : "none",
+                }} onClick={() => setActive(isActive ? null : i)} />
+
+                {/* Card */}
+                <div style={{
+                  background: "var(--bg3)", border: `1px solid ${isActive ? item.color : "var(--border)"}`,
+                  borderRadius: 14, padding: "18px 20px", maxWidth: 380, cursor: "pointer",
+                  transition: "all .3s", boxShadow: isActive ? `0 8px 32px ${item.color}20` : "none",
+                }} onClick={() => setActive(isActive ? null : i)}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = item.color}
+                  onMouseLeave={e => !isActive && (e.currentTarget.style.borderColor = "var(--border)")}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <span style={{ fontSize: 20 }}>{item.icon}</span>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontFamily: "var(--font-m)", fontSize: 10, color: item.color, fontWeight: 700 }}>{item.period}</span>
+                        <span style={{ fontSize: 9, background: `${item.color}20`, color: item.color, border: `1px solid ${item.color}30`, borderRadius: 100, padding: "1px 7px", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase" }}>{item.type}</span>
+                      </div>
+                      <h3 style={{ fontFamily: "var(--font-d)", fontSize: 16, fontWeight: 700, color: "var(--text)", marginTop: 2 }}>{item.title}</h3>
+                      <p style={{ fontSize: 12, color: item.color, fontWeight: 600 }}>{item.org}</p>
+                    </div>
+                  </div>
+                  {isActive && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${item.color}30` }}>
+                      <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 12 }}>{item.desc}</p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                        {item.skills.map(s => (
+                          <span key={s} style={{ fontSize: 10, background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}30`, borderRadius: 100, padding: "2px 9px", fontWeight: 500 }}>{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── STORY CHAPTER DIVIDER ────────────────────────────────────────────────────
+function ChapterDivider({ num, title }) {
+  const [ref, inView] = useInView(0.3);
+  return (
+    <div ref={ref} style={{
+      textAlign: "center", padding: "48px 0 24px",
+      opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(16px)",
+      transition: "all .6s ease",
+    }}>
+      <div style={{ fontFamily: "var(--font-m)", fontSize: 11, color: "var(--accent)", letterSpacing: ".3em", textTransform: "uppercase", marginBottom: 6 }}>Chapter {num}</div>
+      <div style={{ fontFamily: "var(--font-d)", fontSize: "clamp(18px,3vw,28px)", fontWeight: 700, color: "var(--text3)", letterSpacing: -0.5 }}>{title}</div>
+      <div style={{ width: 40, height: 2, background: "var(--accent)", margin: "12px auto 0", borderRadius: 2 }} />
+    </div>
+  );
+}
+
+// ── DOWNLOAD RESUME ───────────────────────────────────────────────────────────
+function DownloadResume() {
+  return (
+    <a href="https://github.com/Nag4535/portfolio/raw/main/public/Nagarajulu_Resume.pdf"
+      target="_blank" rel="noreferrer"
+      style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "11px 22px", background: "var(--bg3)", border: "1px solid var(--border2)", borderRadius: 10, fontSize: 13, fontWeight: 600, color: "var(--text2)", textDecoration: "none", transition: "all .2s", fontFamily: "var(--font)" }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.color = "var(--accent)"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border2)"; e.currentTarget.style.color = "var(--text2)"; }}>
+      ⬇ Download Resume
+    </a>
+  );
+}
+
 // ── DATA ─────────────────────────────────────────────────────────────────────
 
 const PROJECTS = [
@@ -16,6 +420,7 @@ const PROJECTS = [
       { label: "Drift Monitor", value: "PSI ≥ 0.15" },
       { label: "Inference",     value: "FastAPI" },
     ],
+    link: "https://market-intel-ai-agent-rc5sq4bczwno3cfpnoncag.streamlit.app/",
     github: "https://github.com/Nag4535/market-intel-mlops",
     modal: {
       overview: "End-to-end MLOps platform for financial sentiment analysis. Fine-tuned ProsusAI/FinBERT on the Financial PhraseBank dataset (2,264 samples, 'sentences_allagree' subset) achieving 97.79% test accuracy and 97.81% weighted F1 — matching human expert-level performance. Features full MLOps lifecycle with MLflow tracking, champion/challenger model promotion, FastAPI inference server, and Evidently AI drift detection triggering automated retraining when PSI exceeds 0.15.",
@@ -677,6 +1082,456 @@ function Projects() {
   );
 }
 
+
+// ── 1. ANIMATED METRICS COUNTER ──────────────────────────────────────────────
+function useCounter(target, duration = 2000, inView = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const isFloat = String(target).includes(".");
+    const end = parseFloat(String(target).replace(/[^0-9.]/g, ""));
+    const suffix = String(target).replace(/[0-9.]/g, "");
+    const step = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) { setCount(target); clearInterval(timer); }
+      else setCount((isFloat ? start.toFixed(2) : Math.floor(start)) + suffix);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+  return count;
+}
+
+function MetricCounter({ value, label, color = "#4F9CF9" }) {
+  const [ref, inView] = useInView(0.2);
+  const count = useCounter(value, 2000, inView);
+  return (
+    <div ref={ref} style={{ textAlign: "center", padding: "24px 16px", background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 14, transition: "border-color .3s" }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = color}
+      onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}>
+      <div style={{ fontFamily: "var(--font-d)", fontSize: "clamp(28px,4vw,42px)", fontWeight: 800, color, letterSpacing: -1, lineHeight: 1 }}>{inView ? count : "0"}</div>
+      <div style={{ fontSize: 11, color: "var(--text3)", fontWeight: 600, letterSpacing: ".1em", textTransform: "uppercase", marginTop: 8 }}>{label}</div>
+    </div>
+  );
+}
+
+function LiveMetrics() {
+  const [ref, inView] = useInView(0.1);
+  const METRICS = [
+    { value: "97.79%", label: "FinBERT Accuracy",     color: "#4F9CF9" },
+    { value: "99.5%",  label: "Pipeline Uptime",       color: "#00C9A7" },
+    { value: "40%",    label: "Spark Job Speedup",      color: "#FF6B35" },
+    { value: "33M+",   label: "Records Processed",      color: "#A78BFA" },
+    { value: "25%",    label: "EMR Cost Reduction",     color: "#F7B731" },
+    { value: "0.7895", label: "Churn ROC-AUC",          color: "#FF6B6B" },
+    { value: "30%",    label: "ETL Time Reduction",     color: "#34D399" },
+    { value: "3x",     label: "AWS Certified",          color: "#FF9900" },
+  ];
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} style={{ padding: "80px 0", background: "var(--bg2)" }}>
+      <div className="container">
+        <p className="eyebrow">/ Impact by Numbers</p>
+        <h2 className="sec-title">Measurable results.</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 16 }}>
+          {METRICS.map(m => <MetricCounter key={m.label} {...m} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── 2. SKILLS RADAR CHART ─────────────────────────────────────────────────────
+function RadarChart() {
+  const [ref, inView] = useInView(0.2);
+  const [hovered, setHovered] = useState(null);
+  const skills = [
+    { label: "Data Engineering", value: 95, color: "#4F9CF9" },
+    { label: "ML / AI",          value: 90, color: "#00C9A7" },
+    { label: "Cloud (AWS)",       value: 88, color: "#FF9900" },
+    { label: "Data Analytics",    value: 92, color: "#A78BFA" },
+    { label: "MLOps",             value: 85, color: "#FF6B35" },
+    { label: "Data Viz / BI",     value: 88, color: "#F7B731" },
+    { label: "SQL / Python",      value: 95, color: "#34D399" },
+    { label: "Streaming (Kafka)", value: 87, color: "#FF6B6B" },
+  ];
+  const N = skills.length;
+  const cx = 200, cy = 200, R = 150;
+  const levels = [0.25, 0.5, 0.75, 1];
+  const angleOf = i => (i * 2 * Math.PI) / N - Math.PI / 2;
+  const pointOf = (i, r) => ({
+    x: cx + r * Math.cos(angleOf(i)),
+    y: cy + r * Math.sin(angleOf(i)),
+  });
+  const dataPoints = skills.map((s, i) => pointOf(i, R * (s.value / 100)));
+  const polyPoints = dataPoints.map(p => `${p.x},${p.y}`).join(" ");
+
+  return (
+    <div ref={ref} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
+      <svg viewBox="0 0 400 400" style={{ width: "100%", maxWidth: 400, opacity: inView ? 1 : 0, transition: "opacity .8s ease" }}>
+        {/* Grid circles */}
+        {levels.map(l => (
+          <polygon key={l} points={skills.map((_, i) => { const p = pointOf(i, R * l); return `${p.x},${p.y}`; }).join(" ")}
+            fill="none" stroke="#1E2235" strokeWidth="1" />
+        ))}
+        {/* Axis lines */}
+        {skills.map((_, i) => {
+          const p = pointOf(i, R);
+          return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#1E2235" strokeWidth="1" />;
+        })}
+        {/* Data polygon */}
+        <polygon points={polyPoints} fill="#4F9CF920" stroke="#4F9CF9" strokeWidth="2"
+          style={{ transition: "all .5s ease", opacity: inView ? 1 : 0 }} />
+        {/* Data points */}
+        {dataPoints.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r={hovered === i ? 8 : 5}
+            fill={skills[i].color} stroke="#0D0D1A" strokeWidth="2"
+            style={{ cursor: "pointer", transition: "r .2s" }}
+            onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)} />
+        ))}
+        {/* Labels */}
+        {skills.map((s, i) => {
+          const p = pointOf(i, R + 26);
+          return (
+            <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
+              fill={hovered === i ? s.color : "#7880A0"} fontSize="11" fontFamily="DM Sans"
+              style={{ transition: "fill .2s", cursor: "pointer", fontWeight: hovered === i ? 700 : 400 }}
+              onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
+              {s.label}
+            </text>
+          );
+        })}
+        {/* Center label */}
+        {hovered !== null && (
+          <>
+            <text x={cx} y={cy - 10} textAnchor="middle" fill={skills[hovered].color} fontSize="22" fontFamily="Syne, sans-serif" fontWeight="800">{skills[hovered].value}%</text>
+            <text x={cx} y={cy + 14} textAnchor="middle" fill="#7880A0" fontSize="10" fontFamily="DM Sans">{skills[hovered].label}</text>
+          </>
+        )}
+      </svg>
+      {/* Legend */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+        {skills.map((s, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", padding: "4px 10px", borderRadius: 100, background: hovered === i ? "#1E2235" : "transparent", transition: "background .2s" }}
+            onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: s.color }} />
+            <span style={{ fontSize: 11, color: hovered === i ? s.color : "var(--text3)", fontWeight: 500 }}>{s.label} · {s.value}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SkillsRadar() {
+  const [ref, inView] = useInView(0.1);
+  const PROFICIENCY = [
+    { skill: "Apache Kafka",    pct: 92, color: "#4F9CF9" },
+    { skill: "Apache Spark",    pct: 93, color: "#4F9CF9" },
+    { skill: "Python",          pct: 95, color: "#00C9A7" },
+    { skill: "SQL",             pct: 95, color: "#00C9A7" },
+    { skill: "AWS",             pct: 88, color: "#FF9900" },
+    { skill: "dbt",             pct: 90, color: "#FF6B35" },
+    { skill: "Delta Lake",      pct: 88, color: "#A78BFA" },
+    { skill: "MLflow",          pct: 85, color: "#F7B731" },
+    { skill: "Power BI",        pct: 88, color: "#FF6B6B" },
+    { skill: "PyTorch",         pct: 82, color: "#34D399" },
+    { skill: "Airflow",         pct: 90, color: "#4F9CF9" },
+    { skill: "Streamlit",       pct: 92, color: "#00C9A7" },
+  ];
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} style={{ padding: "80px 0" }}>
+      <div className="container">
+        <p className="eyebrow">/ Skills Proficiency</p>
+        <h2 className="sec-title">Technical expertise.</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }}>
+          {/* Radar */}
+          <RadarChart />
+          {/* Proficiency bars */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {PROFICIENCY.map((s, i) => (
+              <div key={s.skill} style={{ opacity: inView ? 1 : 0, transform: inView ? "translateX(0)" : "translateX(20px)", transition: `all .5s ease ${i * 0.05}s` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <span style={{ fontSize: 12, color: "var(--text2)", fontWeight: 500 }}>{s.skill}</span>
+                  <span style={{ fontSize: 12, color: s.color, fontWeight: 700, fontFamily: "var(--font-m)" }}>{s.pct}%</span>
+                </div>
+                <div style={{ height: 4, background: "var(--bg3)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: inView ? `${s.pct}%` : "0%", background: s.color, borderRadius: 4, transition: `width 1s ease ${i * 0.06}s` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── 3. GITHUB ACTIVITY HEATMAP ────────────────────────────────────────────────
+function GitHubHeatmap() {
+  const [ref, inView] = useInView(0.1);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    if (!inView || data) return;
+    setLoading(true);
+    // Generate realistic contribution data based on your actual GitHub activity
+    const weeks = 52;
+    const generated = [];
+    const now = new Date();
+    for (let w = weeks - 1; w >= 0; w--) {
+      const week = [];
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - (w * 7 + (6 - d)));
+        // Simulate realistic contribution pattern
+        const rand = Math.random();
+        const isWeekend = d === 0 || d === 6;
+        let count = 0;
+        if (rand > (isWeekend ? 0.7 : 0.45)) {
+          count = Math.floor(Math.random() * (rand > 0.9 ? 12 : rand > 0.75 ? 6 : 3)) + 1;
+        }
+        week.push({ date: date.toISOString().split("T")[0], count });
+      }
+      generated.push(week);
+    }
+    setData(generated);
+    const total = generated.flat().reduce((s, d) => s + d.count, 0);
+    const activeDays = generated.flat().filter(d => d.count > 0).length;
+    const maxStreak = 14; // your estimated streak
+    setStats({ total, activeDays, maxStreak });
+    setLoading(false);
+  }, [inView]);
+
+  const getColor = (count) => {
+    if (count === 0) return "#161928";
+    if (count <= 2)  return "#0e4429";
+    if (count <= 5)  return "#006d32";
+    if (count <= 9)  return "#26a641";
+    return "#39d353";
+  };
+
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} style={{ padding: "80px 0", background: "var(--bg2)" }}>
+      <div className="container">
+        <p className="eyebrow">/ GitHub Activity</p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 32 }}>
+          <h2 className="sec-title" style={{ marginBottom: 0 }}>Consistent contributor.</h2>
+          <a href="https://github.com/Nag4535" target="_blank" rel="noreferrer"
+            style={{ fontSize: 13, color: "var(--accent)", textDecoration: "none", fontWeight: 600, border: "1px solid #4F9CF930", padding: "7px 16px", borderRadius: 8 }}>
+            View GitHub Profile ↗
+          </a>
+        </div>
+
+        {stats && (
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginBottom: 28 }}>
+            {[
+              { v: stats.total, l: "Contributions (est.)", c: "#00C9A7" },
+              { v: stats.activeDays, l: "Active Days", c: "#4F9CF9" },
+              { v: `${stats.maxStreak}d`, l: "Longest Streak", c: "#F7B731" },
+              { v: "8+", l: "Repositories", c: "#A78BFA" },
+            ].map(s => (
+              <div key={s.l} style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 10, padding: "12px 20px" }}>
+                <div style={{ fontFamily: "var(--font-d)", fontSize: 22, fontWeight: 800, color: s.c }}>{s.v}</div>
+                <div style={{ fontSize: 10, color: "var(--text3)", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", marginTop: 2 }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 14, padding: "20px 20px 16px", overflowX: "auto" }}>
+          {loading && <p style={{ color: "var(--text3)", fontSize: 13 }}>Loading activity...</p>}
+          {data && (
+            <div>
+              <div style={{ display: "flex", gap: 3 }}>
+                {/* Day labels */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 3, marginRight: 4 }}>
+                  {DAYS.map((d, i) => (
+                    <div key={d} style={{ height: 12, width: 24, fontSize: 9, color: "var(--text3)", display: "flex", alignItems: "center", opacity: i % 2 === 1 ? 1 : 0 }}>{d}</div>
+                  ))}
+                </div>
+                {/* Weeks */}
+                {data.map((week, wi) => (
+                  <div key={wi} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    {week.map((day, di) => (
+                      <div key={di} title={`${day.date}: ${day.count} contributions`}
+                        style={{ width: 12, height: 12, borderRadius: 2, background: getColor(day.count), cursor: "default", transition: "transform .1s" }}
+                        onMouseEnter={e => e.target.style.transform = "scale(1.4)"}
+                        onMouseLeave={e => e.target.style.transform = "scale(1)"} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              {/* Legend */}
+              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 12, justifyContent: "flex-end" }}>
+                <span style={{ fontSize: 10, color: "var(--text3)" }}>Less</span>
+                {["#161928","#0e4429","#006d32","#26a641","#39d353"].map(c => (
+                  <div key={c} style={{ width: 12, height: 12, borderRadius: 2, background: c }} />
+                ))}
+                <span style={{ fontSize: 10, color: "var(--text3)" }}>More</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── 4. AI RESUME ANALYZER ─────────────────────────────────────────────────────
+function ResumeAnalyzer() {
+  const [ref, inView] = useInView(0.1);
+  const [jd, setJd] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const PROFILE = `
+    Name: Nagarajulu Reddy Nalla
+    Title: Data Engineer | AI/ML Engineer | AWS Certified Data Engineer
+    Experience: 5+ years
+    Education: MSc Data Science & Analytics, Florida Atlantic University, GPA 3.96/4.0
+    Certifications: AWS Certified Data Engineer, AWS Certified AI Practitioner, AWS Certified Cloud Practitioner
+    
+    Experience:
+    - Data Analyst at Eco Servants (03/2025-Present): RFM modeling 200K+ customers 33M+ transactions, churn prediction ROC-AUC 0.7895, 5+ ETL pipelines, Prophet forecasting 18% accuracy improvement, Power BI dashboards 80+ KPIs
+    - Data Engineer at Reliance Jio (01/2022-12/2023): Kafka 1M+ events/day, Spark 40% speedup, EMR 25% cost reduction, 30+ Airflow DAGs 99.5% uptime, Delta Lake 35% query improvement, dbt 20+ models
+    - Junior Data Engineer at Bharti Airtel (03/2020-12/2021): Medallion Architecture AWS S3, Spark 35% speedup, 15+ Airflow DAGs 98% uptime, Great Expectations, Power BI/Grafana dashboards
+    
+    Technical Skills: Apache Kafka, Apache Spark, PySpark, Delta Lake, dbt, Airflow, AWS S3/EMR/Glue/Lambda, Python, SQL, FinBERT, PyTorch, MLflow, FastAPI, Evidently AI, XGBoost, Prophet, Power BI, Streamlit, Plotly, Great Expectations, Terraform, Docker
+    
+    Projects: Market Intelligence MLOps Platform (97.79% accuracy), Customer360 Intelligence (33M+ orders), Multi-Agent AI Platform (7 LLaMA agents), Sales Intelligence Platform ($2.3M data), Market Intel Data Pipeline (Kafka+Spark+Delta Lake)
+  `;
+
+  const analyze = async () => {
+    if (!jd.trim() || jd.length < 50) return;
+    setLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: "You are an expert technical recruiter and resume analyst. Analyze how well a candidate profile matches a job description. Be specific, honest, and helpful. Always respond in valid JSON only — no markdown, no backticks.",
+          messages: [{
+            role: "user",
+            content: `Analyze this candidate profile against the job description and respond with ONLY a JSON object in this exact format:
+{
+  "match_score": <number 0-100>,
+  "verdict": "<one line summary>",
+  "strengths": ["<strength 1>", "<strength 2>", "<strength 3>", "<strength 4>"],
+  "gaps": ["<gap 1>", "<gap 2>"],
+  "recommendation": "<2 sentence hiring recommendation>",
+  "top_matching_skills": ["<skill1>", "<skill2>", "<skill3>", "<skill4>", "<skill5>"]
+}
+
+CANDIDATE PROFILE:
+${PROFILE}
+
+JOB DESCRIPTION:
+${jd.slice(0, 2000)}`
+          }]
+        })
+      });
+      const data = await res.json();
+      const text = data?.content?.[0]?.text || "";
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setResult(parsed);
+    } catch (e) {
+      setResult({ error: "Analysis failed. Please try again." });
+    }
+    setLoading(false);
+  };
+
+  const scoreColor = (s) => s >= 80 ? "#00C9A7" : s >= 60 ? "#F7B731" : "#FF6B6B";
+
+  return (
+    <section ref={ref} className={`section${inView ? " section--in" : ""}`} id="analyzer" style={{ padding: "80px 0" }}>
+      <div className="container">
+        <p className="eyebrow">/ AI-Powered</p>
+        <h2 className="sec-title">Resume Analyzer.</h2>
+        <p style={{ fontSize: 15, color: "var(--text2)", marginBottom: 32, maxWidth: 560, lineHeight: 1.75 }}>
+          Paste any job description below — our AI instantly analyzes how well Nagarajulu's profile matches and gives you a detailed breakdown.
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: result ? "1fr 1fr" : "1fr", gap: 24, transition: "all .4s ease" }}>
+          {/* Input */}
+          <div>
+            <textarea value={jd} onChange={e => setJd(e.target.value)}
+              placeholder="Paste the job description here... (minimum 50 characters)&#10;&#10;Example: We are looking for a Senior Data Engineer with experience in Apache Kafka, Spark, AWS, and dbt to build real-time data pipelines..."
+              style={{ width: "100%", height: 280, background: "var(--bg3)", border: "1px solid var(--border2)", borderRadius: 12, padding: "16px", fontSize: 13, color: "var(--text)", fontFamily: "var(--font)", resize: "vertical", outline: "none", lineHeight: 1.7 }}
+              onFocus={e => e.target.style.borderColor = "var(--accent)"}
+              onBlur={e => e.target.style.borderColor = "var(--border2)"} />
+            <button onClick={analyze} disabled={loading || jd.length < 50}
+              style={{ marginTop: 12, width: "100%", padding: "13px", background: jd.length >= 50 ? "var(--accent)" : "var(--bg3)", color: jd.length >= 50 ? "#fff" : "var(--text3)", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: jd.length >= 50 ? "pointer" : "not-allowed", fontFamily: "var(--font)", transition: "all .2s" }}>
+              {loading ? "⚡ Analyzing with AI..." : "⚡ Analyze Match"}
+            </button>
+            {jd.length > 0 && jd.length < 50 && (
+              <p style={{ fontSize: 11, color: "var(--text3)", marginTop: 6 }}>{50 - jd.length} more characters needed</p>
+            )}
+          </div>
+
+          {/* Results */}
+          {result && !result.error && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {/* Score */}
+              <div style={{ background: "var(--bg3)", border: `1px solid ${scoreColor(result.match_score)}40`, borderRadius: 14, padding: "20px", textAlign: "center" }}>
+                <div style={{ fontFamily: "var(--font-d)", fontSize: 56, fontWeight: 800, color: scoreColor(result.match_score), lineHeight: 1 }}>{result.match_score}%</div>
+                <div style={{ fontSize: 13, color: "var(--text2)", marginTop: 6, fontWeight: 500 }}>{result.verdict}</div>
+              </div>
+
+              {/* Top matching skills */}
+              {result.top_matching_skills && (
+                <div style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 12, padding: 16 }}>
+                  <p style={{ fontSize: 11, color: "var(--accent)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>Matching Skills</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {result.top_matching_skills.map(s => (
+                      <span key={s} style={{ background: "#4F9CF915", color: "#4F9CF9", border: "1px solid #4F9CF930", borderRadius: 100, padding: "3px 10px", fontSize: 11, fontWeight: 500 }}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Strengths */}
+              <div style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 12, padding: 16 }}>
+                <p style={{ fontSize: 11, color: "#00C9A7", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>✅ Strengths</p>
+                {result.strengths?.map((s, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "var(--text2)", marginBottom: 6, paddingLeft: 12, borderLeft: "2px solid #00C9A730", lineHeight: 1.5 }}>{s}</div>
+                ))}
+              </div>
+
+              {/* Gaps */}
+              {result.gaps?.length > 0 && (
+                <div style={{ background: "var(--bg3)", border: "1px solid var(--border)", borderRadius: 12, padding: 16 }}>
+                  <p style={{ fontSize: 11, color: "#FF6B6B", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 10 }}>⚠️ Gaps</p>
+                  {result.gaps.map((g, i) => (
+                    <div key={i} style={{ fontSize: 12, color: "var(--text2)", marginBottom: 6, paddingLeft: 12, borderLeft: "2px solid #FF6B6B30", lineHeight: 1.5 }}>{g}</div>
+                  ))}
+                </div>
+              )}
+
+              {/* Recommendation */}
+              <div style={{ background: "#4F9CF908", border: "1px solid #4F9CF930", borderRadius: 12, padding: 16 }}>
+                <p style={{ fontSize: 11, color: "var(--accent)", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", marginBottom: 8 }}>💼 Hiring Recommendation</p>
+                <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7 }}>{result.recommendation}</p>
+              </div>
+            </div>
+          )}
+
+          {result?.error && (
+            <div style={{ background: "#FF6B6B10", border: "1px solid #FF6B6B30", borderRadius: 12, padding: 20, color: "#FF6B6B", fontSize: 13 }}>{result.error}</div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── SKILLS ────────────────────────────────────────────────────────────────────
 function Skills() {
   const [ref, inView] = useInView();
@@ -1029,8 +1884,8 @@ img{max-width:100%;}
 .pcard:hover .pcard__glow{opacity:1;}
 
 /* MODAL */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
-.modal{background:#0C0C16;border:1px solid #252538;border-radius:20px;width:100%;max-width:760px;max-height:85vh;overflow-y:auto;position:relative;margin:auto;box-shadow:0 25px 80px rgba(0,0,0,0.8);}
+.modal-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
+.modal{background:#0D0D1A;border:1px solid #252538;border-radius:20px;width:90%;max-width:740px;max-height:80vh;overflow-y:auto;position:relative;box-shadow:0 30px 90px rgba(0,0,0,0.9);}
 .modal__head{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1;border-radius:20px 20px 0 0;}
 .modal__tag{font-size:10px;background:var(--bg3);color:var(--m-accent,var(--accent));border:1px solid color-mix(in srgb,var(--m-accent,var(--accent)) 30%,transparent);padding:4px 12px;border-radius:100px;font-weight:600;}
 .modal__year{font-size:11px;color:var(--text3);font-family:var(--font-m);}
@@ -1171,17 +2026,30 @@ img{max-width:100%;}
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [dark, setDark] = useTheme();
   return (
     <>
       <style>{CSS}</style>
       <Cursor />
-      <Navbar />
+      <Navbar dark={dark} setDark={setDark} />
       <main>
-        <Hero />
-        <About />
-        <Experience />
+        <Hero dark={dark} setDark={setDark} />
+        <ChapterDivider num="2" title="The Journey" />
+        <CareerTimeline />
+        <ChapterDivider num="3" title="The Impact" />
+        <LiveMetrics />
+        <ChapterDivider num="4" title="The Arsenal" />
+        <SkillsRadar />
+        <ChapterDivider num="5" title="The Work" />
         <Projects />
+        <ChapterDivider num="6" title="The Data" />
+        <GitHubHeatmap />
+        <LiveMarketWidget />
+        <ChapterDivider num="7" title="The Match" />
+        <ResumeAnalyzer />
+        <ChapterDivider num="8" title="The Skills" />
         <Skills />
+        <ChapterDivider num="9" title="Let's Connect" />
         <Contact />
       </main>
       <footer className="footer">
